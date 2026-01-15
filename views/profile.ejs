@@ -1,0 +1,425 @@
+<%- include('partials/header') %>
+
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-cover">
+            <img src="<%= profileUser.coverImage || '/images/default-cover.jpg' %>" alt="Cover Image">
+            <div class="profile-cover-overlay"></div>
+        </div>
+        
+        <div class="profile-avatar-wrapper">
+            <img src="<%= profileUser.profileImage || '/images/default-profile.jpg' %>" alt="<%= profileUser.firstName %>" class="profile-avatar">
+        </div>
+        
+        <div class="profile-info">
+            <div>
+                <div class="profile-name-wrapper">
+                    <h1 class="profile-name"><%= profileUser.firstName %> <%= profileUser.lastName %></h1>
+                    <p class="profile-username">@<%= profileUser.username %></p>
+                </div>
+                
+                <div class="profile-meta">
+                    <div class="profile-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><%= profileUser.location || 'Location not set' %></span>
+                    </div>
+                    <div class="profile-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Joined <%= new Date(profileUser.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) %></span>
+                    </div>
+                    <div class="profile-meta-item">
+                        <i class="fas fa-star"></i>
+                        <span><%= averageRating.toFixed(1) %> (<%= stats.reviewsCount %> reviews)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-actions">
+                <% if (!isSelf) { %>
+                    <button class="btn-profile btn-message">
+                        <i class="fas fa-envelope"></i> Message
+                    </button>
+                    <button class="btn-profile btn-follow" data-user-id="<%= profileUser._id %>">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>
+                <% } else { %>
+                    <a href="/profile/edit" class="btn-profile btn-message">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
+                <% } %>
+                <button class="btn-profile btn-more">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profile Navigation -->
+    <div class="profile-nav">
+        <ul class="profile-nav-list">
+            <li class="profile-nav-item active" data-tab="overview">Overview</li>
+            <li class="profile-nav-item" data-tab="motorcycles">Motorcycles</li>
+            <li class="profile-nav-item" data-tab="reviews">Reviews</li>
+            <% if (isSelf) { %>
+                <li class="profile-nav-item" data-tab="settings">Settings</li>
+            <% } %>
+        </ul>
+    </div>
+    
+    <!-- Profile Content -->
+    <div class="profile-content">
+        <div class="profile-main">
+            <!-- Overview Tab (default) -->
+            <div class="profile-tab-content active" id="overview">
+                <!-- Stats Section -->
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">Stats</h2>
+                    </div>
+                    <div class="profile-section-content">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value"><%= stats.totalBikes %></div>
+                                <div class="stat-label">Total Bikes</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value"><%= stats.soldBikes %></div>
+                                <div class="stat-label">Sold</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value"><%= stats.availableBikes %></div>
+                                <div class="stat-label">Available</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Featured Motorcycles -->
+                <% if (bikes && bikes.length > 0) { %>
+                    <div class="profile-section">
+                        <div class="profile-section-header">
+                            <h2 class="profile-section-title">Featured Motorcycles</h2>
+                            <a href="#motorcycles" class="tab-link" data-tab="motorcycles">View All</a>
+                        </div>
+                        <div class="profile-section-content">
+                            <div class="motorcycles-grid">
+                                <% bikes.slice(0, 3).forEach(bike => { %>
+                                    <div class="motorcycle-card">
+                                        <div class="motorcycle-image">
+                                            <img src="<%= bike.images && bike.images.length ? bike.images[0] : '/images/placeholder-bike.jpg' %>" alt="<%= bike.title %>">
+                                            <div class="motorcycle-price">₹<%= bike.price.toLocaleString() %></div>
+                                        </div>
+                                        <div class="motorcycle-content">
+                                            <h3 class="motorcycle-title"><%= bike.title %></h3>
+                                            <div class="motorcycle-meta">
+                                                <span><%= bike.year %></span>
+                                                <span><%= bike.mileage.toLocaleString() %> km</span>
+                                            </div>
+                                            <div class="motorcycle-action">
+                                                <div class="motorcycle-status <%= bike.availability === 'available' ? 'available' : 'sold' %>">
+                                                    <%= bike.availability === 'available' ? 'Available' : 'Sold' %>
+                                                </div>
+                                                <a href="/bikes/<%= bike._id %>" class="btn-view">View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+                
+                <!-- Recent Reviews -->
+                <% if (reviews && reviews.length > 0) { %>
+                    <div class="profile-section">
+                        <div class="profile-section-header">
+                            <h2 class="profile-section-title">Recent Reviews</h2>
+                            <a href="#reviews" class="tab-link" data-tab="reviews">View All</a>
+                        </div>
+                        <div class="profile-section-content">
+                            <div class="review-list">
+                                <% reviews.slice(0, 2).forEach(review => { %>
+                                    <div class="review-card">
+                                        <div class="review-header">
+                                            <img src="<%= review.reviewer.profileImage || '/images/default-profile.jpg' %>" alt="<%= review.reviewer.username %>" class="review-avatar">
+                                            <div class="review-user">
+                                                <h3 class="review-username"><%= review.reviewer.username %></h3>
+                                                <div class="review-date"><%= new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></div>
+                                            </div>
+                                            <div class="review-rating">
+                                                <%- generateStarRating(review.rating) %>
+                                            </div>
+                                        </div>
+                                        <div class="review-text">
+                                            <%= review.text %>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+            
+            <!-- Motorcycles Tab -->
+            <div class="profile-tab-content" id="motorcycles">
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">All Motorcycles</h2>
+                    </div>
+                    <div class="profile-section-content">
+                        <% if (bikes && bikes.length > 0) { %>
+                            <div class="motorcycles-grid">
+                                <% bikes.forEach(bike => { %>
+                                    <div class="motorcycle-card">
+                                        <div class="motorcycle-image">
+                                            <img src="<%= bike.images && bike.images.length ? bike.images[0] : '/images/placeholder-bike.jpg' %>" alt="<%= bike.title %>">
+                                            <div class="motorcycle-price">₹<%= bike.price.toLocaleString() %></div>
+                                        </div>
+                                        <div class="motorcycle-content">
+                                            <h3 class="motorcycle-title"><%= bike.title %></h3>
+                                            <div class="motorcycle-meta">
+                                                <span><%= bike.year %></span>
+                                                <span><%= bike.mileage.toLocaleString() %> km</span>
+                                            </div>
+                                            <div class="motorcycle-action">
+                                                <div class="motorcycle-status <%= bike.availability === 'available' ? 'available' : 'sold' %>">
+                                                    <%= bike.availability === 'available' ? 'Available' : 'Sold' %>
+                                                </div>
+                                                <a href="/bikes/<%= bike._id %>" class="btn-view">View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fas fa-motorcycle"></i>
+                                <h3>No motorcycles listed yet</h3>
+                                <p>This user hasn't listed any motorcycles for sale.</p>
+                                <% if (isSelf) { %>
+                                    <a href="/sell" class="btn-primary">List a Motorcycle</a>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Tab -->
+            <div class="profile-tab-content" id="reviews">
+                <div class="profile-section">
+                    <div class="profile-section-header">
+                        <h2 class="profile-section-title">All Reviews</h2>
+                    </div>
+                    <div class="profile-section-content">
+                        <% if (reviews && reviews.length > 0) { %>
+                            <div class="review-list">
+                                <% reviews.forEach(review => { %>
+                                    <div class="review-card">
+                                        <div class="review-header">
+                                            <img src="<%= review.reviewer.profileImage || '/images/default-profile.jpg' %>" alt="<%= review.reviewer.username %>" class="review-avatar">
+                                            <div class="review-user">
+                                                <h3 class="review-username"><%= review.reviewer.username %></h3>
+                                                <div class="review-date"><%= new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></div>
+                                            </div>
+                                            <div class="review-rating">
+                                                <%- generateStarRating(review.rating) %>
+                                            </div>
+                                        </div>
+                                        <div class="review-text">
+                                            <%= review.text %>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-state">
+                                <i class="fas fa-star"></i>
+                                <h3>No reviews yet</h3>
+                                <p>This user hasn't received any reviews yet.</p>
+                            </div>
+                        <% } %>
+                        
+                        <% if (!isSelf && currentUser) { %>
+                            <div class="review-form">
+                                <h3>Leave a Review</h3>
+                                <form action="/reviews/add" method="POST">
+                                    <input type="hidden" name="sellerId" value="<%= profileUser._id %>">
+                                    
+                                    <div class="rating-input">
+                                        <input type="radio" id="star5" name="rating" value="5" required>
+                                        <label for="star5" title="5 stars"><i class="fas fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star4" name="rating" value="4">
+                                        <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star3" name="rating" value="3">
+                                        <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star2" name="rating" value="2">
+                                        <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star1" name="rating" value="1">
+                                        <label for="star1" title="1 star"><i class="fas fa-star"></i></label>
+                                    </div>
+                                    
+                                    <textarea name="text" class="review-textarea" placeholder="Write your review here..." required></textarea>
+                                    
+                                    <button type="submit" class="btn-submit-review">Submit Review</button>
+                                </form>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Tab (only for self) -->
+            <% if (isSelf) { %>
+                <div class="profile-tab-content" id="settings">
+                    <div class="profile-section">
+                        <div class="profile-section-header">
+                            <h2 class="profile-section-title">Profile Settings</h2>
+                        </div>
+                        <div class="profile-section-content">
+                            <form action="/profile/update" method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" name="firstName" value="<%= profileUser.firstName %>" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" name="lastName" value="<%= profileUser.lastName %>" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" name="email" value="<%= profileUser.email %>" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="text" id="phone" name="phone" value="<%= profileUser.phone || '' %>">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="location">Location</label>
+                                    <input type="text" id="location" name="location" value="<%= profileUser.location || '' %>">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="bio">Bio</label>
+                                    <textarea id="bio" name="bio" rows="4"><%= profileUser.bio || '' %></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profileImage">Profile Picture</label>
+                                    <input type="file" id="profileImage" name="profileImage" accept="image/*">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="coverImage">Cover Image</label>
+                                    <input type="file" id="coverImage" name="coverImage" accept="image/*">
+                                </div>
+                                
+                                <button type="submit" class="btn-submit-review">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        
+        <div class="profile-sidebar">
+            <!-- About Section -->
+            <div class="profile-section">
+                <div class="profile-section-header">
+                    <h2 class="profile-section-title">About</h2>
+                </div>
+                <div class="profile-section-content">
+                    <div class="about-content">
+                        <%= profileUser.bio || `${profileUser.firstName} hasn't added a bio yet.` %>
+                    </div>
+                    
+                    <div class="social-links">
+                        <% if (profileUser.socialLinks && profileUser.socialLinks.facebook) { %>
+                            <a href="<%= profileUser.socialLinks.facebook %>" target="_blank" class="social-link facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                        <% } %>
+                        
+                        <% if (profileUser.socialLinks && profileUser.socialLinks.twitter) { %>
+                            <a href="<%= profileUser.socialLinks.twitter %>" target="_blank" class="social-link twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        <% } %>
+                        
+                        <% if (profileUser.socialLinks && profileUser.socialLinks.instagram) { %>
+                            <a href="<%= profileUser.socialLinks.instagram %>" target="_blank" class="social-link instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        <% } %>
+                        
+                        <% if (profileUser.socialLinks && profileUser.socialLinks.youtube) { %>
+                            <a href="<%= profileUser.socialLinks.youtube %>" target="_blank" class="social-link youtube">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Section -->
+            <div class="profile-section">
+                <div class="profile-section-header">
+                    <h2 class="profile-section-title">Contact</h2>
+                </div>
+                <div class="profile-section-content">
+                    <ul class="contact-list">
+                        <% if (profileUser.phone) { %>
+                            <li class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="contact-content">
+                                    <div class="contact-label">Phone</div>
+                                    <div class="contact-value"><%= profileUser.phone %></div>
+                                </div>
+                            </li>
+                        <% } %>
+                        
+                        <li class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-content">
+                                <div class="contact-label">Email</div>
+                                <div class="contact-value"><%= profileUser.email %></div>
+                            </div>
+                        </li>
+                        
+                        <% if (profileUser.location) { %>
+                            <li class="contact-item">
+                                <div class="contact-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="contact-content">
+                                    <div class="contact-label">Location</div>
+                                    <div class="contact-value"><%= profileUser.location %></div>
+                                </div>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Replace the inline JavaScript with the external script -->
+<script src="/js/utils.js"></script>
+<script src="/js/profile.js"></script>
+
+<%- include('partials/footer') %> 

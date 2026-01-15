@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Security - Bikers Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .profile-section {
+      padding: 60px 0;
+      background-color: #f8f9fa;
+    }
+    
+    .profile-container {
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+      gap: 30px;
+    }
+    
+    .profile-sidebar {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    
+    .profile-photo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #f8f9fa;
+    }
+    
+    .profile-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .profile-menu-item {
+      margin-bottom: 5px;
+    }
+    
+    .profile-menu-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-radius: 5px;
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .profile-menu-link:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .profile-menu-link.active {
+      background-color: #e6f7ff;
+      color: #0084ff;
+    }
+    
+    .profile-menu-link i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .profile-content {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    
+    .content-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      color: #333;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-group input:focus {
+      border-color: #0084ff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.1);
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .security-section {
+      margin-bottom: 40px;
+    }
+    
+    .security-section-title {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .alert-message {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 12px 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .session-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    
+    .session-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .session-icon {
+      margin-right: 15px;
+      font-size: 1.5rem;
+      color: #666;
+    }
+    
+    .session-details h4 {
+      margin: 0 0 5px;
+      font-size: 1rem;
+    }
+    
+    .session-details p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #777;
+    }
+    
+    .current-session {
+      background-color: #e6f7ff;
+    }
+    
+    .current-session .badge {
+      background-color: #0084ff;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      margin-left: 10px;
+    }
+    
+    @media (max-width: 768px) {
+      .profile-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="/dashboard" class="logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+        
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="menu">
+          <li class="menu-item"><a href="/bikes" class="menu-link">Motorcycles</a></li>
+          <li class="menu-item"><a href="/services" class="menu-link">Services</a></li>
+          <li class="menu-item"><a href="/sell" class="menu-link">Sell</a></li>
+          <li class="menu-item dropdown">
+            <a href="#" class="menu-link dropdown-toggle">
+              <i class="fas fa-user-circle"></i> <%= currentUser ? currentUser.firstName : 'User' %>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+              <li><a href="/dashboard/profile"><i class="fas fa-user"></i> My Profile</a></li>
+              <li><a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Profile Section -->
+  <section class="profile-section">
+    <div class="container">
+      <div class="profile-container">
+        <!-- Profile Sidebar -->
+        <div class="profile-sidebar">
+          <div class="profile-photo">
+            <img src="<%= currentUser.profileImage || '/images/default-profile.jpg' %>" alt="Profile Photo" class="profile-image">
+          </div>
+          
+          <ul class="profile-menu">
+            <li class="profile-menu-item">
+              <a href="/dashboard/profile" class="profile-menu-link">
+                <i class="fas fa-user"></i> Personal Information
+              </a>
+            </li>
+            <li class="profile-menu-item">
+              <a href="/dashboard/bikes" class="profile-menu-link">
+                <i class="fas fa-motorcycle"></i> My Listings
+              </a>
+            </li>
+            <li class="profile-menu-item">
+              <a href="/dashboard/saved" class="profile-menu-link">
+                <i class="fas fa-heart"></i> Saved Items
+              </a>
+            </li>
+            <li class="profile-menu-item">
+              <a href="/dashboard/security" class="profile-menu-link active">
+                <i class="fas fa-shield-alt"></i> Security
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="profile-content">
+          <h2 class="content-title">Account Security</h2>
+          
+          <!-- Password Change Section -->
+          <div class="security-section">
+            <h3 class="security-section-title">Change Password</h3>
+            
+            <form id="password-form">
+              <div class="form-group">
+                <label for="currentPassword">Current Password</label>
+                <input type="password" id="currentPassword" name="currentPassword" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="confirmPassword">Confirm New Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+              </div>
+              
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Update Password
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Two-Factor Authentication -->
+          <div class="security-section">
+            <h3 class="security-section-title">Two-Factor Authentication</h3>
+            
+            <p>Add an extra layer of security to your account by enabling two-factor authentication.</p>
+            
+            <div class="form-actions">
+              <button id="enable-2fa" class="btn btn-outline">
+                <i class="fas fa-lock"></i> Enable Two-Factor Authentication
+              </button>
+            </div>
+          </div>
+          
+          <!-- Active Sessions -->
+          <div class="security-section">
+            <h3 class="security-section-title">Active Sessions</h3>
+            
+            <p>These are devices currently logged into your account. You can log out from any device that you don't recognize.</p>
+            
+            <div class="session-list">
+              <div class="session-item current-session">
+                <div class="session-info">
+                  <div class="session-icon">
+                    <i class="fas fa-laptop"></i>
+                  </div>
+                  <div class="session-details">
+                    <h4>Windows PC <span class="badge">Current</span></h4>
+                    <p>Last active: Just now</p>
+                    <p>Location: <%= currentUser ? currentUser.lastLogin?.location || 'Unknown' : 'Unknown' %></p>
+                  </div>
+                </div>
+              </div>
+              
+              <% if (currentUser && currentUser.sessions && currentUser.sessions.length > 0) { %>
+                <% currentUser.sessions.forEach(session => { %>
+                  <% if (!session.isCurrent) { %>
+                    <div class="session-item">
+                      <div class="session-info">
+                        <div class="session-icon">
+                          <i class="fas <%= session.device.includes('Mobile') ? 'fa-mobile-alt' : 'fa-desktop' %>"></i>
+                        </div>
+                        <div class="session-details">
+                          <h4><%= session.device %></h4>
+                          <p>Last active: <%= session.lastActive %></p>
+                          <p>Location: <%= session.location || 'Unknown' %></p>
+                        </div>
+                      </div>
+                      <button class="btn btn-danger btn-sm logout-session" data-session-id="<%= session.id %>">
+                        <i class="fas fa-sign-out-alt"></i> Log Out
+                      </button>
+                    </div>
+                  <% } %>
+                <% }) %>
+              <% } %>
+            </div>
+            
+            <div class="form-actions">
+              <button id="logout-all-devices" class="btn btn-danger">
+                <i class="fas fa-power-off"></i> Log Out From All Devices
+              </button>
+            </div>
+          </div>
+          
+          <!-- Delete Account -->
+          <div class="security-section">
+            <h3 class="security-section-title">Delete Account</h3>
+            
+            <div class="alert-message">
+              <i class="fas fa-exclamation-triangle"></i> Warning: This action cannot be undone. Your account, listings, and all associated data will be permanently deleted.
+            </div>
+            
+            <div class="form-actions">
+              <button id="delete-account" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Delete My Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a href="/" class="footer-logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+          <p>The professional platform for motorcycle enthusiasts to buy, sell, and service bikes.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/bikes">Motorcycles</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/sell">Sell</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Categories</h3>
+          <ul>
+            <li><a href="/bikes?category=Sport">Sport</a></li>
+            <li><a href="/bikes?category=Cruiser">Cruiser</a></li>
+            <li><a href="/bikes?category=Touring">Touring</a></li>
+            <li><a href="/bikes?category=Off-road">Off-road</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="footer-title">Contact Us</h3>
+          <ul>
+            <li>
+              <i class="fas fa-map-marker-alt"></i>
+              <span>123 Bike Street, City, Country</span>
+            </li>
+            <li>
+              <i class="fas fa-phone-alt"></i>
+              <span>+1 (555) 123-4567</span>
+            </li>
+            <li>
+              <i class="fas fa-envelope"></i>
+              <span>info@bikersportal.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 BikersPortal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Alert Container -->
+  <div id="alert-container" class="alert-container"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Password form submit
+      const passwordForm = document.getElementById('password-form');
+      
+      if (passwordForm) {
+        passwordForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const currentPassword = document.getElementById('currentPassword').value;
+          const newPassword = document.getElementById('newPassword').value;
+          const confirmPassword = document.getElementById('confirmPassword').value;
+          
+          // Basic validation
+          if (!currentPassword || !newPassword || !confirmPassword) {
+            showAlert('error', 'All fields are required');
+            return;
+          }
+          
+          if (newPassword !== confirmPassword) {
+            showAlert('error', 'New passwords do not match');
+            return;
+          }
+          
+          if (newPassword.length < 8) {
+            showAlert('error', 'Password must be at least 8 characters long');
+            return;
+          }
+          
+          try {
+            const response = await fetch('/api/account/change-password', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                currentPassword,
+                newPassword
+              })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+              showAlert('success', 'Password updated successfully');
+              passwordForm.reset();
+            } else {
+              showAlert('error', data.error || 'Failed to update password');
+            }
+          } catch (error) {
+            console.error('Password change error:', error);
+            showAlert('error', 'An error occurred. Please try again.');
+          }
+        });
+      }
+      
+      // Two-factor authentication
+      const enable2FABtn = document.getElementById('enable-2fa');
+      
+      if (enable2FABtn) {
+        enable2FABtn.addEventListener('click', async () => {
+          try {
+            const response = await fetch('/api/account/enable-2fa', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+              // Show QR code modal
+              showAlert('success', 'Two-factor authentication setup started. Please scan the QR code.');
+              
+              // In a real implementation, you would show a modal with the QR code
+              // and verification field
+            } else {
+              showAlert('error', data.error || 'Failed to enable two-factor authentication');
+            }
+          } catch (error) {
+            console.error('Enable 2FA error:', error);
+            showAlert('error', 'An error occurred. Please try again.');
+          }
+        });
+      }
+      
+      // Logout from session
+      const logoutSessionBtns = document.querySelectorAll('.logout-session');
+      
+      if (logoutSessionBtns.length > 0) {
+        logoutSessionBtns.forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const sessionId = btn.getAttribute('data-session-id');
+            
+            try {
+              const response = await fetch(`/api/account/session/${sessionId}/logout`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+              
+              const data = await response.json();
+              
+              if (data.success) {
+                showAlert('success', 'Session logged out successfully');
+                btn.closest('.session-item').remove();
+              } else {
+                showAlert('error', data.error || 'Failed to log out session');
+              }
+            } catch (error) {
+              console.error('Session logout error:', error);
+              showAlert('error', 'An error occurred. Please try again.');
+            }
+          });
+        });
+      }
+      
+      // Logout from all devices
+      const logoutAllBtn = document.getElementById('logout-all-devices');
+      
+      if (logoutAllBtn) {
+        logoutAllBtn.addEventListener('click', async () => {
+          if (confirm('Are you sure you want to log out from all devices? You will need to login again on this device as well.')) {
+            try {
+              const response = await fetch('/api/account/logout-all', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              });
+              
+              const data = await response.json();
+              
+              if (data.success) {
+                showAlert('success', 'Logged out from all devices. Redirecting to login...');
+                
+                // Redirect to login page after a brief delay
+                setTimeout(() => {
+                  window.location.href = '/login.html';
+                }, 2000);
+              } else {
+                showAlert('error', data.error || 'Failed to log out from all devices');
+              }
+            } catch (error) {
+              console.error('Logout all error:', error);
+              showAlert('error', 'An error occurred. Please try again.');
+            }
+          }
+        });
+      }
+      
+      // Delete account
+      const deleteAccountBtn = document.getElementById('delete-account');
+      
+      if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', () => {
+          const confirmText = prompt('This action cannot be undone. To confirm, please type "DELETE MY ACCOUNT" below:');
+          
+          if (confirmText === 'DELETE MY ACCOUNT') {
+            deleteAccount();
+          } else if (confirmText !== null) {
+            showAlert('error', 'Confirmation text did not match. Account was not deleted.');
+          }
+        });
+        
+        async function deleteAccount() {
+          try {
+            const response = await fetch('/api/account/delete', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+              showAlert('success', 'Your account has been deleted. Redirecting to homepage...');
+              
+              // Redirect to home page after a brief delay
+              setTimeout(() => {
+                window.location.href = '/';
+              }, 2000);
+            } else {
+              showAlert('error', data.error || 'Failed to delete account');
+            }
+          } catch (error) {
+            console.error('Delete account error:', error);
+            showAlert('error', 'An error occurred. Please try again.');
+          }
+        }
+      }
+      
+      // Alert function
+      function showAlert(type, message) {
+        const alertContainer = document.getElementById('alert-container');
+        
+        if (alertContainer) {
+          // Create alert element
+          const alertElement = document.createElement('div');
+          alertElement.className = `alert alert-${type}`;
+          alertElement.innerHTML = `
+            <div class="alert-content">
+              <i class="alert-icon fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+              <span class="alert-message">${message}</span>
+            </div>
+            <button class="alert-close">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          // Add alert to container
+          alertContainer.appendChild(alertElement);
+          
+          // Add click event to close button
+          const closeButton = alertElement.querySelector('.alert-close');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => {
+              alertContainer.removeChild(alertElement);
+            });
+          }
+          
+          // Auto-remove after 5 seconds
+          setTimeout(() => {
+            if (alertContainer.contains(alertElement)) {
+              alertContainer.removeChild(alertElement);
+            }
+          }, 5000);
+        }
+      }
+    });
+  </script>
+</body>
+</html> 

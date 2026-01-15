@@ -1,0 +1,64 @@
+<nav class="navbar">
+  <div class="container">
+    <a href="/" class="logo">
+      <i class="fas fa-motorcycle"></i> BikersPortal
+    </a>
+    
+    <% if (currentUser) { %>
+      <div class="nav-links">
+        <a href="/dashboard" class="<%= page === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+        <a href="/bikes" class="<%= page === 'bikes' ? 'active' : '' %>">Buy</a>
+        <a href="/sell" class="<%= page === 'sell' ? 'active' : '' %>">Sell</a>
+        <a href="/services" class="<%= page === 'services' ? 'active' : '' %>">Services</a>
+        
+        <div class="dropdown">
+          <button class="dropdown-toggle">
+            <% if (currentUser.avatar) { %>
+              <img src="<%= currentUser.avatar %>" alt="<%= currentUser.username %>" class="avatar-small">
+            <% } else { %>
+              <i class="fas fa-user-circle"></i>
+            <% } %>
+            <span><%= currentUser.username %></span>
+            <i class="fas fa-caret-down"></i>
+          </button>
+          <div class="dropdown-menu">
+            <a href="/profile">My Profile</a>
+            <a href="/dashboard/messages">Messages</a>
+            <a href="/dashboard/bookings">My Bookings</a>
+            <a href="/dashboard/saved">Saved Items</a>
+            <a href="/dashboard/settings">Settings</a>
+            <a href="/auth/logout">Logout</a>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="nav-links">
+        <a href="/login.html" class="nav-link">Login</a>
+        <a href="/register.html" class="nav-link">Register</a>
+      </div>
+    <% } %>
+    
+    <button class="mobile-menu-toggle">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu that shows on small screens -->
+<div class="mobile-menu">
+  <% if (currentUser) { %>
+    <a href="/dashboard" class="<%= page === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+    <a href="/bikes" class="<%= page === 'bikes' ? 'active' : '' %>">Buy</a>
+    <a href="/sell" class="<%= page === 'sell' ? 'active' : '' %>">Sell</a>
+    <a href="/services" class="<%= page === 'services' ? 'active' : '' %>">Services</a>
+    <a href="/profile">My Profile</a>
+    <a href="/dashboard/messages">Messages</a>
+    <a href="/dashboard/bookings">My Bookings</a>
+    <a href="/dashboard/saved">Saved Items</a>
+    <a href="/dashboard/settings">Settings</a>
+    <a href="/auth/logout">Logout</a>
+  <% } else { %>
+    <a href="/login.html">Login</a>
+    <a href="/register.html">Register</a>
+  <% } %>
+</div> 

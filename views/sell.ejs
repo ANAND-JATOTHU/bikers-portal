@@ -1,0 +1,254 @@
+<%- include('./partials/header') %>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="sell-form-container">
+                <h2>Sell Your Motorcycle</h2>
+                
+                <form id="sellForm" method="POST" action="/bikes/create" enctype="multipart/form-data">
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+                        <p class="section-description">Provide the essential details about your motorcycle.</p>
+                        
+                        <div class="mb-3 required-field">
+                            <label for="title" class="form-label">Listing Title</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="e.g. 2020 Harley-Davidson Street Glide - Low Miles">
+                            <div class="form-text">A clear, descriptive title helps your bike get noticed.</div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3 required-field">
+                                <label for="brand" class="form-label">Brand</label>
+                                <select class="form-select" id="brand" name="brand">
+                                    <option value="" selected disabled>Select Brand</option>
+                                    <option value="Harley-Davidson">Harley-Davidson</option>
+                                    <option value="Honda">Honda</option>
+                                    <option value="Yamaha">Yamaha</option>
+                                    <option value="Kawasaki">Kawasaki</option>
+                                    <option value="Suzuki">Suzuki</option>
+                                    <option value="BMW">BMW</option>
+                                    <option value="Ducati">Ducati</option>
+                                    <option value="Triumph">Triumph</option>
+                                    <option value="KTM">KTM</option>
+                                    <option value="Royal Enfield">Royal Enfield</option>
+                                    <option value="TVS">TVS</option>
+                                    <option value="Bajaj">Bajaj</option>
+                                    <option value="Hero">Hero</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3 required-field">
+                                <label for="model" class="form-label">Model</label>
+                                <input type="text" class="form-control" id="model" name="model" placeholder="e.g. Street Glide, CBR 1000RR">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3 required-field">
+                                <label for="year" class="form-label">Year</label>
+                                <select class="form-select" id="year" name="year">
+                                    <option value="" selected disabled>Select Year</option>
+                                    <% for(let i = new Date().getFullYear(); i >= 1970; i--) { %>
+                                        <option value="<%= i %>"><%= i %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3 required-field">
+                                <label for="price" class="form-label">Price (₹)</label>
+                                <div class="price-input-group input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="price" name="price" placeholder="e.g. 250000">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3 required-field">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category">
+                                    <option value="" selected disabled>Select Category</option>
+                                    <option value="Sport">Sport</option>
+                                    <option value="Cruiser">Cruiser</option>
+                                    <option value="Touring">Touring</option>
+                                    <option value="Standard">Standard</option>
+                                    <option value="Off-Road">Off-Road</option>
+                                    <option value="Scooter">Scooter</option>
+                                    <option value="Electric">Electric</option>
+                                    <option value="Cafe Racer">Cafe Racer</option>
+                                    <option value="Adventure">Adventure</option>
+                                    <option value="Commuter">Commuter</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Technical Details Section -->
+                    <div class="form-section">
+                        <h3>Technical Details</h3>
+                        <p class="section-description">Share the specifications of your motorcycle.</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3 required-field">
+                                <label for="engineCapacity" class="form-label">Engine Capacity (cc)</label>
+                                <input type="number" class="form-control" id="engineCapacity" name="engineCapacity" placeholder="e.g. 1000">
+                            </div>
+                            
+                            <div class="col-md-6 mb-3 required-field">
+                                <label for="mileage" class="form-label">Mileage (km)</label>
+                                <input type="number" class="form-control" id="mileage" name="mileage" placeholder="e.g. 15000">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fuelType" class="form-label">Fuel Type</label>
+                                <select class="form-select" id="fuelType" name="fuelType">
+                                    <option value="Petrol" selected>Petrol</option>
+                                    <option value="Diesel">Diesel</option>
+                                    <option value="Electric">Electric</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="color" class="form-label">Color</label>
+                                <input type="text" class="form-control" id="color" name="color" placeholder="e.g. Vivid Black, Pearl White">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 required-field">
+                            <label for="condition" class="form-label">Condition</label>
+                            <select class="form-select" id="condition" name="condition">
+                                <option value="" selected disabled>Select Condition</option>
+                                <option value="New">New</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Excellent">Excellent</option>
+                                <option value="Good">Good</option>
+                                <option value="Fair">Fair</option>
+                                <option value="Poor">Poor</option>
+                                <option value="For Parts">For Parts</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Category-specific fields will be populated here -->
+                        <div id="categorySpecificFields"></div>
+                    </div>
+                    
+                    <!-- Features Section -->
+                    <div class="form-section">
+                        <h3>Features</h3>
+                        <p class="section-description">What makes your motorcycle stand out?</p>
+                        
+                        <div class="features-container">
+                            <div class="features-input-group">
+                                <input type="text" class="form-control" id="featureInput" placeholder="Add a feature (e.g. ABS, LED Lights)">
+                                <button type="button" class="btn btn-primary" id="addFeatureBtn">Add</button>
+                            </div>
+                            
+                            <div id="featuresContainer">
+                                <!-- Features will be added here dynamically -->
+                                <div class="form-text mb-2">Common features: ABS, Digital Display, USB Charging, Cruise Control, LED Lights</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Description Section -->
+                    <div class="form-section">
+                        <h3>Description</h3>
+                        <p class="section-description">Provide additional details about your motorcycle.</p>
+                        
+                        <div class="mb-3 required-field">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" placeholder="Describe your motorcycle, its history, any modifications, and why you're selling it."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Photos Section -->
+                    <div class="form-section">
+                        <h3>Photos</h3>
+                        <p class="section-description">Upload clear photos of your motorcycle (max 8).</p>
+                        
+                        <div class="image-upload-container">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop photos here or click the button below</p>
+                            <input type="file" id="imageUpload" name="images" multiple accept="image/*" style="display: none;">
+                            <button type="button" class="btn" id="uploadBtn">Choose Photos</button>
+                            <p class="mt-2"><small>Max 8 photos, 5MB each. First photo will be the main image.</small></p>
+                        </div>
+                        
+                        <div class="image-preview-container" id="imagePreviewContainer">
+                            <!-- Image previews will be displayed here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Location Section -->
+                    <div class="form-section">
+                        <h3>Location</h3>
+                        <p class="section-description">Where is your motorcycle located?</p>
+                        
+                        <div class="mb-3 required-field">
+                            <label for="location" class="form-label">Location</label>
+                            <div class="location-input-group">
+                                <input type="text" class="form-control" id="location" name="location" placeholder="e.g. Mumbai, Maharashtra">
+                                <button type="button" class="btn" id="detectLocationBtn">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                            </div>
+                            <div class="form-text">Providing your city and state helps local buyers find your listing.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Section -->
+                    <div class="submit-btn-container">
+                        <button type="button" class="btn btn-secondary" id="saveAsDraftBtn">Save as Draft</button>
+                        <button type="submit" class="btn btn-primary" id="publishListingBtn">Publish Listing</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="sell-form-container">
+                <h3>Selling Tips</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="fas fa-camera text-primary"></i>
+                        <strong>Quality Photos</strong>
+                        <p class="small text-muted">Take photos in good lighting from multiple angles.</p>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-file-alt text-primary"></i>
+                        <strong>Detailed Description</strong>
+                        <p class="small text-muted">Mention maintenance history, modifications, and any issues.</p>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-tag text-primary"></i>
+                        <strong>Realistic Price</strong>
+                        <p class="small text-muted">Research similar bikes to set a competitive price.</p>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-clipboard-list text-primary"></i>
+                        <strong>Service Records</strong>
+                        <p class="small text-muted">Mention if you have maintenance documentation.</p>
+                    </li>
+                    <li class="list-group-item">
+                        <i class="fas fa-phone text-primary"></i>
+                        <strong>Be Responsive</strong>
+                        <p class="small text-muted">Reply promptly to inquiries to increase chances of selling.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Container for notifications -->
+<div id="alertContainer"></div>
+
+<%- include('./partials/footer') %>
+
+<!-- Include the sell.js script -->
+<script src="/js/sell.js"></script> 

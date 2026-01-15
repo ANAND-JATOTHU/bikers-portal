@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+logs/
+*.log
+
+# Build outputs
+dist/
+build/
+out/
+
+# Uploads (if you want to exclude user uploads)
+# public/uploads/
+# Uncomment above line if you don't want to track uploaded files
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Coverage and test files
+coverage/
+.nyc_output/
+
+# Mac
+.AppleDouble
+.LSOverride

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= bike ? bike.title : 'Bike Details' %> - Bikers Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/utils.css">
+  <link rel="stylesheet" href="/css/bike-details.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="/" class="logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+        
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="menu">
+          <li class="menu-item"><a href="/bikes" class="menu-link active">Motorcycles</a></li>
+          <li class="menu-item"><a href="/services" class="menu-link">Services</a></li>
+          <li class="menu-item"><a href="/sell" class="menu-link">Sell</a></li>
+          <% if (currentUser) { %>
+            <li class="menu-item dropdown">
+              <a href="#" class="menu-link dropdown-toggle">
+                <i class="fas fa-user-circle"></i> <%= currentUser.firstName %>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/profile"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+              </ul>
+            </li>
+          <% } else { %>
+            <li class="menu-item"><a href="/login.html" class="menu-link">Login</a></li>
+            <li class="menu-item"><a href="/register.html" class="btn btn-primary menu-button">Register</a></li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <section class="bike-details-section section">
+    <div class="container">
+      <!-- Breadcrumbs -->
+      <div class="breadcrumbs">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/bikes">Motorcycles</a></li>
+          <li><span><%= bike ? bike.title : 'Bike Details' %></span></li>
+        </ul>
+      </div>
+      
+      <% if (bike) { %>
+        <div class="bike-details-grid">
+          <!-- Image Gallery -->
+          <div class="bike-gallery">
+            <div class="main-image">
+              <img src="<%= bike.images && bike.images.length > 0 ? bike.images[0] : '/images/placeholder-bike.jpg' %>" alt="<%= bike.title %>" id="main-image">
+            </div>
+            
+            <% if (bike.images && bike.images.length > 1) { %>
+              <div class="image-thumbnails">
+                <% bike.images.forEach((image, index) => { %>
+                  <div class="thumbnail <%= index === 0 ? 'active' : '' %>" onclick="changeMainImage('<%= image %>', this)">
+                    <img src="<%= image %>" alt="<%= bike.title %> - View <%= index+1 %>">
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+          </div>
+          
+          <!-- Bike Details -->
+          <div class="bike-info">
+            <h1 class="bike-title"><%= bike.title %></h1>
+            
+            <div class="bike-price">
+              <% if (bike.originalPrice && bike.originalPrice > bike.price) { %>
+                <div class="price-info">
+                  <span class="current-price">₹<%= bike.price.toLocaleString() %></span>
+                  <span class="original-price">₹<%= bike.originalPrice.toLocaleString() %></span>
+                  <span class="discount"><%= Math.round((1 - bike.price/bike.originalPrice) * 100) %>% OFF</span>
+                </div>
+              <% } else { %>
+                <div class="price-info">
+                  <span class="current-price">₹<%= bike.price.toLocaleString() %></span>
+                </div>
+              <% } %>
+            </div>
+            
+            <div class="bike-location">
+              <i class="fas fa-map-marker-alt"></i> <%= bike.location %>
+            </div>
+            
+            <div class="bike-stats">
+              <div class="stat">
+                <i class="fas fa-calendar"></i>
+                <span>Year</span>
+                <strong><%= bike.year %></strong>
+              </div>
+              
+              <div class="stat">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Mileage</span>
+                <strong><%= bike.mileage %> km</strong>
+              </div>
+              
+              <div class="stat">
+                <i class="fas fa-cog"></i>
+                <span>Engine</span>
+                <strong><%= bike.engineCapacity %> cc</strong>
+              </div>
+              
+              <div class="stat">
+                <i class="fas fa-star"></i>
+                <span>Condition</span>
+                <strong><%= bike.condition %></strong>
+              </div>
+            </div>
+            
+            <div class="bike-actions">
+              <button class="btn btn-primary contact-seller-btn">
+                <i class="fas fa-envelope"></i> Contact Seller
+              </button>
+              
+              <button class="btn btn-outline add-to-favorites-btn" onclick="toggleFavorite('<%= bike._id %>')">
+                <i class="fas fa-heart"></i> Add to Favorites
+              </button>
+            </div>
+            
+            <div class="seller-info">
+              <div class="seller-profile">
+                <img src="<%= bike.seller && bike.seller.profileImage ? bike.seller.profileImage : '/images/default-profile.jpg' %>" alt="Seller profile">
+                <div>
+                  <div class="seller-name"><%= bike.seller ? bike.seller.firstName + ' ' + bike.seller.lastName : 'Unknown Seller' %></div>
+                  <a href="/profile/<%= bike.seller ? bike.seller.username : '' %>" class="view-profile-link">View Profile</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bike-details-tabs">
+          <div class="tabs">
+            <div class="tab active" data-tab="description">Description</div>
+            <div class="tab" data-tab="specifications">Specifications</div>
+            <div class="tab" data-tab="features">Features</div>
+          </div>
+          
+          <div class="tab-content">
+            <div class="tab-pane active" id="description">
+              <h3>About this motorcycle</h3>
+              <div class="description-text">
+                <%= bike.description %>
+              </div>
+            </div>
+            
+            <div class="tab-pane" id="specifications">
+              <h3>Specifications</h3>
+              <table class="specs-table">
+                <tr>
+                  <td>Brand</td>
+                  <td><%= bike.brand %></td>
+                </tr>
+                <tr>
+                  <td>Model</td>
+                  <td><%= bike.model %></td>
+                </tr>
+                <tr>
+                  <td>Year</td>
+                  <td><%= bike.year %></td>
+                </tr>
+                <tr>
+                  <td>Engine Capacity</td>
+                  <td><%= bike.engineCapacity %> cc</td>
+                </tr>
+                <tr>
+                  <td>Mileage</td>
+                  <td><%= bike.mileage %> km</td>
+                </tr>
+                <tr>
+                  <td>Condition</td>
+                  <td><%= bike.condition %></td>
+                </tr>
+                <tr>
+                  <td>Color</td>
+                  <td><%= bike.color || 'Not specified' %></td>
+                </tr>
+                <tr>
+                  <td>Fuel Type</td>
+                  <td><%= bike.fuelType || 'Not specified' %></td>
+                </tr>
+              </table>
+            </div>
+            
+            <div class="tab-pane" id="features">
+              <h3>Features</h3>
+              <% if (bike.features && bike.features.length > 0) { %>
+                <ul class="features-list">
+                  <% bike.features.forEach(feature => { %>
+                    <li><i class="fas fa-check"></i> <%= feature %></li>
+                  <% }) %>
+                </ul>
+              <% } else { %>
+                <p>No features specified.</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        
+        <div class="similar-bikes">
+          <h2>Similar Motorcycles</h2>
+          <div class="similar-bikes-grid">
+            <div class="bike-card">
+              <div class="bike-card-image">
+                <a href="/bikes/placeholder">
+                  <img src="/images/placeholder-bike.jpg" alt="Similar Bike">
+                </a>
+              </div>
+              <div class="bike-card-content">
+                <h3>Similar Motorcycle</h3>
+                <div class="bike-card-price">₹<%= bike.price.toLocaleString() %></div>
+                <div class="bike-card-location">Sample Location</div>
+              </div>
+            </div>
+            
+            <div class="bike-card">
+              <div class="bike-card-image">
+                <a href="/bikes/placeholder">
+                  <img src="/images/placeholder-bike.jpg" alt="Similar Bike">
+                </a>
+              </div>
+              <div class="bike-card-content">
+                <h3>Similar Motorcycle</h3>
+                <div class="bike-card-price">₹4,599</div>
+                <div class="bike-card-location">Sample Location</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <h2>Bike not found</h2>
+          <p>Sorry, we couldn't find the motorcycle you're looking for.</p>
+          <a href="/bikes" class="btn btn-primary">Browse Motorcycles</a>
+        </div>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a href="/" class="footer-logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+          <p>The professional platform for motorcycle enthusiasts to buy, sell, and service bikes.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/bikes">Motorcycles</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/sell">Sell</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Categories</h3>
+          <ul>
+            <li><a href="/bikes?category=Sport">Sport</a></li>
+            <li><a href="/bikes?category=Cruiser">Cruiser</a></li>
+            <li><a href="/bikes?category=Touring">Touring</a></li>
+            <li><a href="/bikes?category=Off-road">Off-road</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="footer-title">Contact Us</h3>
+          <ul>
+            <li>
+              <i class="fas fa-map-marker-alt"></i>
+              <span>123 Bike Street, City, Country</span>
+            </li>
+            <li>
+              <i class="fas fa-phone-alt"></i>
+              <span>+1 (555) 123-4567</span>
+            </li>
+            <li>
+              <i class="fas fa-envelope"></i>
+              <span>info@bikersportal.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 BikersPortal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/main.js"></script>
+  <script>
+    // Function to change main image
+    function changeMainImage(imageSrc, thumbnailElement) {
+      document.getElementById('main-image').src = imageSrc;
+      
+      // Remove active class from all thumbnails
+      document.querySelectorAll('.thumbnail').forEach(thumbnail => {
+        thumbnail.classList.remove('active');
+      });
+      
+      // Add active class to clicked thumbnail
+      thumbnailElement.classList.add('active');
+    }
+    
+    // Function to toggle tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(t => {
+          t.classList.remove('active');
+        });
+        
+        // Add active class to clicked tab
+        this.classList.add('active');
+        
+        // Hide all tab panes
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+          pane.classList.remove('active');
+        });
+        
+        // Show corresponding tab pane
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+    
+    // Function to toggle favorite
+    function toggleFavorite(bikeId) {
+      // Check if user is logged in
+      <% if (!currentUser) { %>
+        window.location.href = '/login.html?returnTo=' + encodeURIComponent(window.location.pathname);
+        return;
+      <% } %>
+      
+      fetch(`/api/bikes/${bikeId}/favorite`, {
+        method: 'POST',
+        credentials: 'same-origin'
+      })
+      .then(response => response.json())
+      .then(data => {
+        const favBtn = document.querySelector('.add-to-favorites-btn');
+        
+        if (data.action === 'added') {
+          favBtn.classList.add('favorited');
+          favBtn.innerHTML = '<i class="fas fa-heart"></i> Favorited';
+        } else {
+          favBtn.classList.remove('favorited');
+          favBtn.innerHTML = '<i class="far fa-heart"></i> Add to Favorites';
+        }
+      })
+      .catch(error => {
+        console.error('Error toggling favorite:', error);
+      });
+    }
+  </script>
+</body>
+</html> 

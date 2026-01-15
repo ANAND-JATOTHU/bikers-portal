@@ -1,0 +1,228 @@
+<%- include('partials/header') %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0"><i class="fas fa-motorcycle me-2"></i>List Your Motorcycle</h3>
+        </div>
+        <div class="card-body">
+          <% if(errors && errors.length > 0) { %>
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                <% errors.forEach(error => { %>
+                  <li><%= error.msg %></li>
+                <% }) %>
+              </ul>
+            </div>
+          <% } %>
+          
+          <% if(req.fileValidationError) { %>
+            <div class="alert alert-danger">
+              <%= req.fileValidationError %>
+            </div>
+          <% } %>
+
+          <form action="/bikes" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <h4 class="mb-3">Basic Information</h4>
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="title" class="form-label">Listing Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="title" name="title" value="<%= formData.title || '' %>" required>
+                <div class="invalid-feedback">Please provide a title for your listing.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="brand" class="form-label">Brand <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="brand" name="brand" value="<%= formData.brand || '' %>" required>
+                <div class="invalid-feedback">Please provide the motorcycle brand.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="model" class="form-label">Model <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="model" name="model" value="<%= formData.model || '' %>" required>
+                <div class="invalid-feedback">Please provide the motorcycle model.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="year" class="form-label">Year <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="year" name="year" min="1900" max="<%= new Date().getFullYear() + 1 %>" value="<%= formData.year || new Date().getFullYear() %>" required>
+                <div class="invalid-feedback">Please provide a valid year.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="price" class="form-label">Price (INR) <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">₹</span>
+                  <input type="number" class="form-control" id="price" name="price" min="1" value="<%= formData.price || '' %>" required>
+                  <div class="invalid-feedback">Please provide a valid price.</div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="mileage" class="form-label">Mileage (km) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="mileage" name="mileage" min="0" value="<%= formData.mileage || 0 %>" required>
+                <div class="invalid-feedback">Please provide the mileage.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="engineCapacity" class="form-label">Engine Capacity (cc) <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="engineCapacity" name="engineCapacity" min="1" value="<%= formData.engineCapacity || '' %>" required>
+                <div class="invalid-feedback">Please provide the engine capacity.</div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+            <h4 class="mb-3">Details</h4>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label for="condition" class="form-label">Condition <span class="text-danger">*</span></label>
+                <select class="form-select" id="condition" name="condition" required>
+                  <option value="" disabled <%= !formData.condition ? 'selected' : '' %>>Select condition</option>
+                  <option value="new" <%= formData.condition === 'new' ? 'selected' : '' %>>New</option>
+                  <option value="excellent" <%= formData.condition === 'excellent' ? 'selected' : '' %>>Excellent</option>
+                  <option value="good" <%= formData.condition === 'good' ? 'selected' : '' %>>Good</option>
+                  <option value="fair" <%= formData.condition === 'fair' ? 'selected' : '' %>>Fair</option>
+                  <option value="poor" <%= formData.condition === 'poor' ? 'selected' : '' %>>Poor</option>
+                </select>
+                <div class="invalid-feedback">Please select the condition.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="color" class="form-label">Color <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="color" name="color" value="<%= formData.color || '' %>" required>
+                <div class="invalid-feedback">Please provide the color.</div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="fuelType" class="form-label">Fuel Type <span class="text-danger">*</span></label>
+                <select class="form-select" id="fuelType" name="fuelType" required>
+                  <option value="" disabled <%= !formData.fuelType ? 'selected' : '' %>>Select fuel type</option>
+                  <option value="petrol" <%= formData.fuelType === 'petrol' ? 'selected' : '' %>>Petrol</option>
+                  <option value="diesel" <%= formData.fuelType === 'diesel' ? 'selected' : '' %>>Diesel</option>
+                  <option value="electric" <%= formData.fuelType === 'electric' ? 'selected' : '' %>>Electric</option>
+                  <option value="hybrid" <%= formData.fuelType === 'hybrid' ? 'selected' : '' %>>Hybrid</option>
+                </select>
+                <div class="invalid-feedback">Please select the fuel type.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="category" class="form-label">Category <span class="text-danger">*</span></label>
+                <select class="form-select" id="category" name="category" required>
+                  <option value="" disabled <%= !formData.category ? 'selected' : '' %>>Select category</option>
+                  <option value="sport" <%= formData.category === 'sport' ? 'selected' : '' %>>Sport</option>
+                  <option value="cruiser" <%= formData.category === 'cruiser' ? 'selected' : '' %>>Cruiser</option>
+                  <option value="touring" <%= formData.category === 'touring' ? 'selected' : '' %>>Touring</option>
+                  <option value="standard" <%= formData.category === 'standard' ? 'selected' : '' %>>Standard</option>
+                  <option value="off-road" <%= formData.category === 'off-road' ? 'selected' : '' %>>Off-Road</option>
+                  <option value="scooter" <%= formData.category === 'scooter' ? 'selected' : '' %>>Scooter</option>
+                  <option value="moped" <%= formData.category === 'moped' ? 'selected' : '' %>>Moped</option>
+                  <option value="other" <%= formData.category === 'other' ? 'selected' : '' %>>Other</option>
+                </select>
+                <div class="invalid-feedback">Please select the category.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="location" name="location" value="<%= formData.location || user.location || '' %>" required>
+                <div class="invalid-feedback">Please provide the location.</div>
+              </div>
+
+              <div class="col-12">
+                <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="description" name="description" rows="5" required><%= formData.description || '' %></textarea>
+                <div class="invalid-feedback">Please provide a description.</div>
+                <div class="form-text">Minimum 20 characters. Include details about the motorcycle's history, modifications, and any issues.</div>
+              </div>
+
+              <div class="col-12">
+                <label for="features" class="form-label">Features</label>
+                <input type="text" class="form-control" id="features" name="features" value="<%= formData.features || '' %>">
+                <div class="form-text">Separate features with commas (e.g., ABS, LED Lights, Bluetooth Connectivity)</div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+            <h4 class="mb-3">Images</h4>
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="images" class="form-label">Upload Images <span class="text-danger">*</span></label>
+                <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple required>
+                <div class="invalid-feedback">Please upload at least one image.</div>
+                <div class="form-text">Upload up to 10 images. Maximum size: 5MB per image. Supported formats: JPG, JPEG, PNG, GIF.</div>
+              </div>
+
+              <div class="col-12">
+                <div id="image-preview" class="row g-2 mt-2"></div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+            <button class="btn btn-primary btn-lg w-100" type="submit">List Motorcycle</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Form validation
+  (() => {
+    'use strict'
+
+    // Fetch all forms we want to apply validation styles to
+    const forms = document.querySelectorAll('.needs-validation')
+
+    // Loop over them and prevent submission
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+
+  // Image preview
+  document.getElementById('images').addEventListener('change', function(e) {
+    const previewContainer = document.getElementById('image-preview');
+    previewContainer.innerHTML = '';
+
+    if (this.files) {
+      for (let i = 0; i < this.files.length; i++) {
+        if (i >= 10) break; // Only show up to 10 previews
+
+        const file = this.files[i];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const col = document.createElement('div');
+          col.className = 'col-6 col-md-4 col-lg-3';
+          
+          const imgContainer = document.createElement('div');
+          imgContainer.className = 'position-relative border rounded p-1 h-100';
+          
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.className = 'img-fluid';
+          img.style.objectFit = 'cover';
+          img.style.height = '150px';
+          img.style.width = '100%';
+          
+          imgContainer.appendChild(img);
+          col.appendChild(imgContainer);
+          previewContainer.appendChild(col);
+        }
+        
+        reader.readAsDataURL(file);
+      }
+    }
+  });
+</script>
+
+<%- include('partials/footer') %> 

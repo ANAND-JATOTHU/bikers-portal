@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title + ' | BikersPortal' : 'BikersPortal - Motorcycle Marketplace' %></title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/utils.css">
+    
+    <!-- Page-specific CSS -->
+    <% if (typeof page !== 'undefined') { %>
+        <% if (page === 'buy') { %>
+            <link rel="stylesheet" href="/css/buy.css">
+        <% } else if (page === 'bikes') { %>
+            <link rel="stylesheet" href="/css/bikes.css">
+        <% } else if (page === 'sell') { %>
+            <link rel="stylesheet" href="/css/sell.css">
+        <% } else if (page === 'bike-details') { %>
+            <link rel="stylesheet" href="/css/bike-details.css">
+        <% } else if (page === 'dashboard') { %>
+            <link rel="stylesheet" href="/css/dashboard.css">
+        <% } else if (page === 'profile') { %>
+            <link rel="stylesheet" href="/css/profile.css">
+        <% } %>
+    <% } %>
+</head>
+<body>
+    <!-- Add helper functions for templates -->
+    <% 
+    // Helper function to generate star rating HTML
+    function generateStarRating(rating, maxRating = 5) {
+        let html = '<div class="star-rating">';
+        
+        // Full stars
+        const fullStars = Math.floor(rating);
+        for (let i = 0; i < fullStars; i++) {
+            html += '<i class="fas fa-star"></i>';
+        }
+        
+        // Half star
+        if (rating % 1 >= 0.5) {
+            html += '<i class="fas fa-star-half-alt"></i>';
+        }
+        
+        // Empty stars
+        const emptyStars = maxRating - fullStars - (rating % 1 >= 0.5 ? 1 : 0);
+        for (let i = 0; i < emptyStars; i++) {
+            html += '<i class="far fa-star"></i>';
+        }
+        
+        html += '</div>';
+        return html;
+    }
+    %>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <i class="fas fa-motorcycle"></i> BikersPortal
+                </a>
+                
+                <div class="navbar-menu">
+                    <ul class="nav-links">
+                        <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                        <li class="nav-item"><a href="/bikes" class="nav-link">Motorcycles</a></li>
+                        <li class="nav-item"><a href="/sell" class="nav-link">Sell</a></li>
+                    </ul>
+                    
+                    <div class="navbar-actions">
+                        <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+                            <div class="dropdown">
+                                <button class="dropdown-toggle">
+                                    <img src="<%= currentUser.profileImage || '/images/default-profile.jpg' %>" alt="<%= currentUser.username %>" class="profile-image">
+                                    <span class="profile-name"><%= currentUser.username %></span>
+                                    <i class="fas fa-caret-down"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a href="/dashboard" class="dropdown-item">
+                                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                                    </a>
+                                    <a href="/profile" class="dropdown-item">
+                                        <i class="fas fa-user"></i> My Profile
+                                    </a>
+                                    <a href="/favorites" class="dropdown-item">
+                                        <i class="fas fa-heart"></i> Favorites
+                                    </a>
+                                    <a href="/messages" class="dropdown-item">
+                                        <i class="fas fa-envelope"></i> Messages
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="/auth/logout" class="dropdown-item text-danger">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </a>
+                                </div>
+                            </div>
+                        <% } else { %>
+                            <a href="/login.html" class="btn btn-outline">Login</a>
+                            <a href="/register.html" class="btn btn-primary">Register</a>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <button class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Flash Messages -->
+    <% if (typeof messages !== 'undefined' && messages && (messages.success || messages.error)) { %>
+        <div class="flash-messages">
+            <div class="container">
+                <% if (messages.success) { %>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <%= messages.success %>
+                        <button class="close">&times;</button>
+                    </div>
+                <% } %>
+                
+                <% if (messages.error) { %>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <%= messages.error %>
+                        <button class="close">&times;</button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    <% } %>
+    
+    <!-- Main Content -->
+</body>
+</html> 

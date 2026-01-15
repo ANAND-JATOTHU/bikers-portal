@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Bikers Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    
+    .auth-container {
+      display: flex;
+      min-height: calc(100vh - 140px);
+    }
+    
+    .auth-form {
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    
+    .form-container {
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    
+    .input-group {
+      position: relative;
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 12px 15px 12px 45px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-control:focus {
+      border-color: #0084ff;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.1);
+    }
+    
+    .form-check {
+      display: flex;
+      align-items: center;
+    }
+    
+    .form-check-input {
+      margin-right: 8px;
+    }
+    
+    .form-check-label {
+      color: #666;
+      user-select: none;
+    }
+    
+    .form-btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    
+    .form-footer {
+      text-align: center;
+      margin-top: 25px;
+      color: #666;
+    }
+    
+    .form-footer a {
+      color: #0084ff;
+      text-decoration: none;
+    }
+    
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .auth-video {
+      position: relative;
+      overflow: hidden;
+      width: 50%;
+      background-color: #000;
+    }
+    
+    .auth-video video {
+      position: absolute;
+      min-width: 100%;
+      min-height: 100%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0.7;
+    }
+    
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+    
+    .video-overlay h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .video-overlay p {
+      font-size: 1.2rem;
+      max-width: 80%;
+      margin: 0 auto;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    .alert-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      max-width: 350px;
+    }
+    
+    .alert {
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      animation: slideIn 0.3s ease-out forwards;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .alert-success {
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+      color: #155724;
+    }
+    
+    .alert-error {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      color: #721c24;
+    }
+    
+    .alert-content {
+      display: flex;
+      align-items: center;
+    }
+    
+    .alert-icon {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+    
+    .alert-close {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    
+    .alert-close:hover {
+      opacity: 1;
+    }
+    
+    .invalid-feedback {
+      display: none;
+      color: #dc3545;
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+    
+    .was-validated .form-control:invalid {
+      border-color: #dc3545;
+    }
+    
+    .was-validated .form-control:invalid + .invalid-feedback {
+      display: block;
+    }
+    
+    @media (max-width: 768px) {
+      .auth-container {
+        flex-direction: column;
+      }
+      
+      .auth-form, .auth-video {
+        width: 100%;
+      }
+      
+      .auth-video {
+        min-height: 250px;
+        order: -1;
+      }
+      
+      .auth-form {
+        padding: 20px;
+      }
+      
+      .form-container {
+        padding: 30px;
+      }
+      
+      .video-overlay h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="/" class="logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+        
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="menu">
+          <li class="menu-item"><a href="/bikes" class="menu-link">Motorcycles</a></li>
+          <li class="menu-item"><a href="/services" class="menu-link">Services</a></li>
+          <li class="menu-item"><a href="/sell" class="menu-link">Sell</a></li>
+          <li class="menu-item"><a href="/login.html" class="menu-link active">Login</a></li>
+          <li class="menu-item"><a href="/register.html" class="btn btn-primary menu-button">Register</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Login Section -->
+  <section class="auth-container">
+    <div class="auth-form">
+      <div class="form-container">
+        <h2 class="form-title">Login to Your Account</h2>
+        
+        <!-- Alert Container -->
+        <div id="alert-container" class="alert-container"></div>
+        
+        <form id="login-form" class="needs-validation" novalidate>
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <div class="input-group">
+              <i class="input-icon fas fa-envelope"></i>
+              <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="invalid-feedback">Please enter a valid email address.</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+              <i class="input-icon fas fa-lock"></i>
+              <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <div class="invalid-feedback">Please enter your password.</div>
+          </div>
+          
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" id="remember" name="remember" class="form-check-input">
+              <label for="remember" class="form-check-label">Remember me</label>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary form-btn">
+              <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+          </div>
+          
+          <div class="form-footer">
+            <p>Don't have an account? <a href="/register.html">Register</a></p>
+            <p><a href="/forgot-password.html">Forgot Password?</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <div class="auth-video">
+      <video autoplay muted loop id="bike-video">
+        <source src="/videos/motorcycle-riding.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <div class="video-overlay">
+        <h2>Experience the Freedom</h2>
+        <p>Join our community of motorcycle enthusiasts and discover your perfect ride.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2023 BikersPortal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginForm = document.getElementById('login-form');
+      
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          // Validate form
+          if (!loginForm.checkValidity()) {
+            e.stopPropagation();
+            loginForm.classList.add('was-validated');
+            return;
+          }
+          
+          // Get form data
+          const formData = new FormData(loginForm);
+          const loginData = {
+            email: formData.get('email'),
+            password: formData.get('password')
+          };
+          
+          try {
+            // Show loading indicator
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            submitBtn.disabled = true;
+            
+            const response = await fetch('/auth/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(loginData)
+            });
+            
+            const data = await response.json();
+            
+            // Reset button state
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+            
+            if (data.success) {
+              // Show success message and redirect
+              showAlert('success', 'Login successful! Redirecting to dashboard...');
+              
+              // Redirect after short delay
+              setTimeout(() => {
+                window.location.href = '/dashboard';
+              }, 1500);
+            } else {
+              // Show error message
+              showAlert('error', data.error || 'Invalid credentials. Please try again.');
+            }
+          } catch (error) {
+            console.error('Login error:', error);
+            showAlert('error', 'An error occurred during login. Please try again.');
+            
+            // Reset button state
+            const submitBtn = loginForm.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            submitBtn.disabled = false;
+          }
+        });
+      }
+      
+      // Alert function for login page
+      function showAlert(type, message) {
+        const alertContainer = document.getElementById('alert-container');
+        
+        if (alertContainer) {
+          // Create alert element
+          const alertElement = document.createElement('div');
+          alertElement.className = `alert alert-${type}`;
+          alertElement.innerHTML = `
+            <div class="alert-content">
+              <i class="alert-icon fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+              <span class="alert-message">${message}</span>
+            </div>
+            <button class="alert-close">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          // Add alert to container
+          alertContainer.appendChild(alertElement);
+          
+          // Add click event to close button
+          const closeButton = alertElement.querySelector('.alert-close');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => {
+              alertContainer.removeChild(alertElement);
+            });
+          }
+          
+          // Auto-remove after 5 seconds for success alerts
+          if (type === 'success') {
+            setTimeout(() => {
+              if (alertContainer.contains(alertElement)) {
+                alertContainer.removeChild(alertElement);
+              }
+            }, 5000);
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html> 

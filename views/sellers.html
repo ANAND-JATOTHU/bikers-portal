@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .sellers-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .search-filters {
+      background-color: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .filter-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    
+    .search-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    .search-button:hover {
+      background-color: #0056b3;
+    }
+    
+    .sort-filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .results-count {
+      color: #666;
+    }
+    
+    .sort-dropdown {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: white;
+    }
+    
+    .sellers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .seller-card {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      background-color: white;
+    }
+    
+    .seller-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .seller-header {
+      position: relative;
+      height: 120px;
+      background-color: #007bff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .seller-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid white;
+      object-fit: cover;
+      position: absolute;
+      bottom: -50px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .seller-info {
+      padding: 60px 1.5rem 1.5rem;
+      text-align: center;
+    }
+    
+    .seller-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    
+    .seller-location {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    
+    .seller-rating {
+      margin-bottom: 1rem;
+    }
+    
+    .rating-stars {
+      color: #ffc107;
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .rating-count {
+      color: #777;
+      font-size: 0.85rem;
+    }
+    
+    .seller-stats {
+      display: flex;
+      justify-content: space-around;
+      padding: 1rem 0;
+      border-top: 1px solid #eee;
+      margin-top: 1rem;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-weight: 600;
+      color: #333;
+      font-size: 1.1rem;
+    }
+    
+    .stat-label {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .seller-actions {
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-view {
+      flex: 1;
+      padding: 0.75rem 0;
+      text-align: center;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+    
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+    
+    .btn-outline {
+      border: 1px solid #007bff;
+      color: #007bff;
+      background-color: transparent;
+    }
+    
+    .btn-outline:hover {
+      background-color: #f0f7ff;
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 3rem;
+    }
+    
+    .page-item {
+      display: inline-block;
+    }
+    
+    .page-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: white;
+      border: 1px solid #ddd;
+      color: #333;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    
+    .page-link:hover {
+      background-color: #f4f4f4;
+    }
+    
+    .page-item.active .page-link {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+    
+    .page-item.disabled .page-link {
+      color: #aaa;
+      pointer-events: none;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      margin-top: 2rem;
+    }
+    
+    .empty-icon {
+      font-size: 4rem;
+      color: #ddd;
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .filter-group {
+        grid-template-columns: 1fr;
+      }
+      
+      .sellers-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      .sort-filters {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <a href="/" class="logo">Bikers Portal</a>
+      <nav class="nav-menu">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/bikes">Browse Bikes</a>
+        <a href="/sellers" class="active">Sellers</a>
+        
+        <a href="/about">About Us</a>
+      </nav>
+      <div class="nav-buttons">
+        <% if (currentUser) { %>
+          <a href="/dashboard" class="btn btn-outline">My Account</a>
+          <a href="/logout" class="btn btn-primary">Logout</a>
+        <% } else { %>
+          <a href="/login" class="btn btn-outline">Login</a>
+          <a href="/register" class="btn btn-primary">Register</a>
+        <% } %>
+      </div>
+      <button class="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="sellers-container">
+    <h1>Explore Motorcycle Sellers</h1>
+    <p>Find trusted sellers with great bikes and excellent service ratings</p>
+    
+    <div class="search-filters">
+      <form id="filterForm" action="/sellers" method="GET">
+        <div class="filter-group">
+          <div>
+            <input type="text" name="search" placeholder="Search by name or location" class="form-control" value="<%= query.search || '' %>">
+          </div>
+          <div>
+            <select name="location" class="form-control">
+              <option value="">All Locations</option>
+              <% locations.forEach(location => { %>
+                <option value="<%= location %>" <%= query.location === location ? 'selected' : '' %>><%= location %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div>
+            <select name="minRating" class="form-control">
+              <option value="">Minimum Rating</option>
+              <option value="5" <%= query.minRating === '5' ? 'selected' : '' %>>5 Stars</option>
+              <option value="4" <%= query.minRating === '4' ? 'selected' : '' %>>4+ Stars</option>
+              <option value="3" <%= query.minRating === '3' ? 'selected' : '' %>>3+ Stars</option>
+              <option value="2" <%= query.minRating === '2' ? 'selected' : '' %>>2+ Stars</option>
+              <option value="1" <%= query.minRating === '1' ? 'selected' : '' %>>1+ Stars</option>
+            </select>
+          </div>
+          <div>
+            <button type="submit" class="search-button">
+              <i class="fas fa-search"></i> Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="sort-filters">
+      <div class="results-count">
+        <strong><%= totalSellers %></strong> sellers found
+      </div>
+      <div>
+        <select id="sortOrder" name="sort" class="sort-dropdown" onchange="updateSortOrder(this.value)">
+          <option value="rating" <%= query.sort === 'rating' ? 'selected' : '' %>>Sort by: Rating (High to Low)</option>
+          <option value="reviews" <%= query.sort === 'reviews' ? 'selected' : '' %>>Sort by: Number of Reviews</option>
+          <option value="bikes" <%= query.sort === 'bikes' ? 'selected' : '' %>>Sort by: Bikes Listed</option>
+          <option value="newest" <%= query.sort === 'newest' ? 'selected' : '' %>>Sort by: Newest Sellers</option>
+        </select>
+      </div>
+    </div>
+    
+    <% if (sellers && sellers.length > 0) { %>
+      <div class="sellers-grid">
+        <% sellers.forEach(seller => { %>
+          <div class="seller-card">
+            <div class="seller-header">
+              <img src="<%= seller.profileImage || '/images/default-profile.jpg' %>" alt="<%= seller.firstName %>" class="seller-avatar">
+            </div>
+            
+            <div class="seller-info">
+              <h3 class="seller-name"><%= seller.firstName %> <%= seller.lastName %></h3>
+              
+              <div class="seller-location">
+                <i class="fas fa-map-marker-alt"></i> 
+                <span><%= seller.location || 'Location not specified' %></span>
+              </div>
+              
+              <div class="seller-rating">
+                <div class="rating-stars">
+                  <% for(let i = 1; i <= 5; i++) { %>
+                    <i class="fas fa-star <%= i <= Math.round(seller.averageRating || 0) ? 'active' : '' %>"></i>
+                  <% } %>
+                </div>
+                <div class="rating-count">
+                  <span><%= seller.averageRating?.toFixed(1) || 'No' %> (<%= seller.reviewCount || 0 %> reviews)</span>
+                </div>
+              </div>
+              
+              <div class="seller-stats">
+                <div class="stat-item">
+                  <div class="stat-value"><%= seller.bikeCount || 0 %></div>
+                  <div class="stat-label">Bikes</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value"><%= seller.followers?.length || 0 %></div>
+                  <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value"><%= new Date(seller.createdAt).getFullYear() %></div>
+                  <div class="stat-label">Joined</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="seller-actions">
+              <a href="/sellers/<%= seller._id %>" class="btn-view btn-primary">View Profile</a>
+              <a href="/bikes?seller=<%= seller._id %>" class="btn-view btn-outline">View Bikes</a>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+      
+      <% if (totalPages > 1) { %>
+        <div class="pagination">
+          <div class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="/sellers<%= buildQueryString({...query, page: currentPage - 1}) %>" aria-label="Previous">
+              <i class="fas fa-chevron-left"></i>
+            </a>
+          </div>
+          
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <div class="page-item <%= i === currentPage ? 'active' : '' %>">
+              <a class="page-link" href="/sellers<%= buildQueryString({...query, page: i}) %>"><%= i %></a>
+            </div>
+          <% } %>
+          
+          <div class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+            <a class="page-link" href="/sellers<%= buildQueryString({...query, page: currentPage + 1}) %>" aria-label="Next">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </div>
+        </div>
+      <% } %>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-users-slash"></i>
+        </div>
+        <h2>No sellers found</h2>
+        <p>We couldn't find any sellers matching your criteria. Try adjusting your filters or check back later.</p>
+        <a href="/sellers" class="btn-primary" style="display: inline-block; margin-top: 1rem; padding: 0.75rem 1.5rem; text-decoration: none;">Clear Filters</a>
+      </div>
+    <% } %>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>Bikers Portal</h3>
+          <p>The ultimate marketplace for motorcycle enthusiasts to buy, sell, and find services.</p>
+        </div>
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/bikes">Bikes</a></li>
+            <li><a href="/sellers">Sellers</a></li>
+            
+            <li><a href="/about">About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Contact Us</h3>
+          <p>Email: info@bikersportal.com</p>
+          <p>Phone: +91 1234567890</p>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 Bikers Portal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/script.js"></script>
+  <script>
+    // Function to handle sort change
+    function updateSortOrder(sortValue) {
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('sort', sortValue);
+      window.location.href = window.location.pathname + '?' + urlParams.toString();
+    }
+    
+    // Mobile responsiveness for filters
+    const filterToggle = document.querySelector('.filter-toggle');
+    const filterContent = document.querySelector('.filter-content');
+    
+    if (filterToggle && filterContent) {
+      filterToggle.addEventListener('click', () => {
+        filterContent.classList.toggle('active');
+        filterToggle.classList.toggle('active');
+      });
+    }
+  </script>
+</body>
+</html> 

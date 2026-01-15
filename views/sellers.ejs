@@ -1,0 +1,110 @@
+<%- include('partials/header') %>
+
+<div class="container mt-5">
+    <h1 class="mb-4">Motorcycle Sellers</h1>
+    
+    <!-- Search and Filter Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form action="/sellers" method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Search</label>
+                    <input type="text" class="form-control" id="search" name="search" value="<%= search || '' %>" placeholder="Search by name or description">
+                </div>
+                <div class="col-md-3">
+                    <label for="location" class="form-label">Location</label>
+                    <select class="form-select" id="location" name="location">
+                        <option value="">All Locations</option>
+                        <% locations.forEach(loc => { %>
+                            <option value="<%= loc %>" <%= (location === loc) ? 'selected' : '' %>><%= loc %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="minRating" class="form-label">Minimum Rating</label>
+                    <select class="form-select" id="minRating" name="minRating">
+                        <option value="">Any Rating</option>
+                        <option value="4" <%= (minRating === '4') ? 'selected' : '' %>>4+ Stars</option>
+                        <option value="3" <%= (minRating === '3') ? 'selected' : '' %>>3+ Stars</option>
+                        <option value="2" <%= (minRating === '2') ? 'selected' : '' %>>2+ Stars</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Sellers List -->
+    <div class="row">
+        <% if (sellers.length === 0) { %>
+            <div class="col-12 text-center py-5">
+                <h3>No sellers found matching your criteria</h3>
+                <p>Try adjusting your search filters or check back later for new sellers</p>
+            </div>
+        <% } else { %>
+            <% sellers.forEach(seller => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="<%= seller.profileImage || '/images/default-profile.jpg' %>" alt="<%= seller.name %>" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                <div>
+                                    <h5 class="card-title mb-0"><%= seller.name %></h5>
+                                    <div class="text-muted"><i class="fas fa-map-marker-alt"></i> <%= seller.location %></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-2">
+                                <span class="badge bg-primary me-1"><%= seller.bikeCount %> Bikes</span>
+                                <span class="badge bg-info me-1"><%= seller.reviewCount %> Reviews</span>
+                                <div class="mt-2">
+                                    <% for (let i = 1; i <= 5; i++) { %>
+                                        <i class="fas fa-star <%= i <= seller.avgRating ? 'text-warning' : 'text-muted' %>"></i>
+                                    <% } %>
+                                    <span class="ms-1"><%= seller.avgRating.toFixed(1) %></span>
+                                </div>
+                            </div>
+                            
+                            <p class="card-text"><%= seller.bio ? (seller.bio.length > 100 ? seller.bio.substring(0, 100) + '...' : seller.bio) : 'No bio available.' %></p>
+                            
+                            <a href="/sellers/<%= seller._id %>" class="btn btn-outline-primary">View Profile</a>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+    
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <nav aria-label="Seller pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="<%= paginationBaseUrl %>page=<%= currentPage - 1 %>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <% } %>
+                
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="<%= paginationBaseUrl %>page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+                
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="<%= paginationBaseUrl %>page=<%= currentPage + 1 %>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %> 

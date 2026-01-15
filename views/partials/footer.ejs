@@ -1,0 +1,95 @@
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section about">
+                    <div class="logo">
+                        <i class="fas fa-motorcycle"></i> BikersPortal
+                    </div>
+                    <p class="footer-description">
+                        BikersPortal is the ultimate motorcycle marketplace connecting riders, sellers, and service providers.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section links">
+                    <h3 class="footer-heading">Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/bikes">Buy Motorcycle</a></li>
+                        <li><a href="/sell">Sell Motorcycle</a></li>
+                        <li><a href="/blog">Motorcycle Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section links">
+                    <h3 class="footer-heading">Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="/bikes?category=sport">Sport Bikes</a></li>
+                        <li><a href="/bikes?category=cruiser">Cruisers</a></li>
+                        <li><a href="/bikes?category=touring">Touring Bikes</a></li>
+                        <li><a href="/bikes?category=adventure">Adventure Bikes</a></li>
+                        <li><a href="/bikes?category=off-road">Off-Road</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section contact">
+                    <h3 class="footer-heading">Contact Us</h3>
+                    <ul class="contact-details">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Bike Street, Moto City</li>
+                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@bikersportal.com</li>
+                    </ul>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your Email" required>
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <%= new Date().getFullYear() %> BikersPortal. All Rights Reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                    <a href="/sitemap">Sitemap</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top" title="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Alert Container for JS Notifications -->
+    <div id="alert-container"></div>
+    
+    <!-- Custom JavaScript -->
+    <script src="/js/utils.js"></script>
+    <script src="/js/main.js"></script>
+    
+    <!-- Page-specific JavaScript -->
+    <% if (typeof page !== 'undefined') { %>
+        <% if (page === 'buy') { %>
+            <script src="/js/buy.js"></script>
+        <% } else if (page === 'bikes') { %>
+            <script src="/js/bikes.js"></script>
+        <% } else if (page === 'sell') { %>
+            <script src="/js/sell.js"></script>
+        <% } else if (page === 'bike-details') { %>
+            <script src="/js/bike-details.js"></script>
+        <% } else if (page === 'dashboard') { %>
+            <script src="/js/dashboard.js"></script>
+        <% } else if (page === 'profile') { %>
+            <script src="/js/profile.js"></script>
+        <% } %>
+    <% } %>
+</body>
+</html> 

@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sell Your Motorcycle - Bikers Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="/" class="logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+        
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="menu">
+          <li class="menu-item"><a href="/bikes" class="menu-link">Motorcycles</a></li>
+          
+          <li class="menu-item"><a href="/sell" class="menu-link active">Sell</a></li>
+          <% if (currentUser) { %>
+            <li class="menu-item dropdown">
+              <a href="#" class="menu-link dropdown-toggle">
+                <i class="fas fa-user-circle"></i> <%= currentUser.firstName %>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/profile"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+              </ul>
+            </li>
+          <% } else { %>
+            <li class="menu-item"><a href="/login.html" class="menu-link">Login</a></li>
+            <li class="menu-item"><a href="/register.html" class="btn btn-primary menu-button">Register</a></li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Sell Your Motorcycle</h1>
+      <p>List your bike on BikersPortal and reach thousands of potential buyers</p>
+    </div>
+  </section>
+
+  <!-- Login Required Message (shown to non-logged in users) -->
+  <% if (!currentUser) { %>
+  <section class="login-required section">
+    <div class="container text-center">
+      <i class="fas fa-lock login-required-icon"></i>
+      <h2>Please Login to List Your Motorcycle</h2>
+      <p>You need to be logged in to create a listing. It only takes a minute to sign up!</p>
+      <div class="login-buttons">
+        <a href="/login.html" class="btn btn-primary btn-lg">Login</a>
+        <a href="/register.html" class="btn btn-outline btn-lg">Register</a>
+      </div>
+    </div>
+  </section>
+  <% } else { %>
+
+  <!-- Sell Form Section -->
+  <section class="sell-form-section section">
+    <div class="container">
+      <div class="form-container wide-form">
+        <!-- Alert Container -->
+        <div id="alert-container" class="alert-container"></div>
+        
+        <form id="sell-form" class="sell-form needs-validation" action="/api/bikes" method="POST" novalidate enctype="multipart/form-data">
+          <h2 class="form-title">Motorcycle Details</h2>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="title" class="form-label">Listing Title</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-motorcycle"></i>
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. 2019 Honda CBR650R in Excellent Condition" required>
+              </div>
+              <div class="invalid-feedback">Please provide a title for your listing.</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="brand" class="form-label">Brand</label>
+              <select id="brand" name="brand" class="form-control" required>
+                <option value="" disabled selected>Select Brand</option>
+                <option value="Honda">Honda</option>
+                <option value="Yamaha">Yamaha</option>
+                <option value="Kawasaki">Kawasaki</option>
+                <option value="Suzuki">Suzuki</option>
+                <option value="Harley-Davidson">Harley-Davidson</option>
+                <option value="BMW">BMW</option>
+                <option value="Ducati">Ducati</option>
+                <option value="KTM">KTM</option>
+                <option value="Triumph">Triumph</option>
+                <option value="Royal Enfield">Royal Enfield</option>
+                <option value="Other">Other</option>
+              </select>
+              <div class="invalid-feedback">Please select a brand.</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="model" class="form-label">Model</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-tag"></i>
+                <input type="text" id="model" name="model" class="form-control" placeholder="e.g. CBR650R" required>
+              </div>
+              <div class="invalid-feedback">Please provide the model name.</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="year" class="form-label">Year</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-calendar"></i>
+                <input type="number" id="year" name="year" class="form-control" placeholder="e.g. 2019" min="1900" max="2099" required>
+              </div>
+              <div class="invalid-feedback">Please enter a valid year (1900-2099).</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="category" class="form-label">Category</label>
+              <select id="category" name="category" class="form-control" required>
+                <option value="" disabled selected>Select Category</option>
+                <option value="Sport">Sport</option>
+                <option value="Cruiser">Cruiser</option>
+                <option value="Touring">Touring</option>
+                <option value="Off-road">Off-road</option>
+                <option value="Scooter">Scooter</option>
+                <option value="Electric">Electric</option>
+                <option value="Other">Other</option>
+              </select>
+              <div class="invalid-feedback">Please select a category.</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="price" class="form-label">Price (₹)</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-rupee-sign"></i>
+                <input type="number" id="price" name="price" class="form-control" placeholder="Enter price" min="1" required>
+              </div>
+              <div class="invalid-feedback">Please enter a valid price.</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="condition" class="form-label">Condition</label>
+              <select id="condition" name="condition" class="form-control" required>
+                <option value="" disabled selected>Select Condition</option>
+                <option value="New">New</option>
+                <option value="Like New">Like New</option>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+                <option value="Poor">Poor</option>
+              </select>
+              <div class="invalid-feedback">Please select the condition of your motorcycle.</div>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="color" class="form-label">Color</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-palette"></i>
+                <input type="text" id="color" name="color" class="form-control" placeholder="e.g. Red, Black, Blue">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="fuelType" class="form-label">Fuel Type</label>
+              <select id="fuelType" name="fuelType" class="form-control">
+                <option value="Petrol" selected>Petrol</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Electric">Electric</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="mileage" class="form-label">Mileage (km)</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-tachometer-alt"></i>
+                <input type="number" id="mileage" name="mileage" class="form-control" placeholder="Enter mileage" min="0" required>
+              </div>
+              <div class="invalid-feedback">Please enter the mileage.</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="engineCapacity" class="form-label">Engine Capacity (cc)</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-cog"></i>
+                <input type="number" id="engineCapacity" name="engineCapacity" class="form-control" placeholder="e.g. 650" min="1" required>
+              </div>
+              <div class="invalid-feedback">Please enter the engine capacity.</div>
+            </div>
+          </div>
+          
+          <h3 class="form-subtitle">Description & Features</h3>
+          
+          <div class="form-group">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="6" placeholder="Describe your motorcycle in detail. Include information about its condition, any modifications, service history, and other relevant details." required></textarea>
+            <div class="invalid-feedback">Please provide a description.</div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Features</label>
+            <div id="features-list">
+              <div class="input-group mb-2">
+                <input type="text" class="form-control" name="features[]" placeholder="Enter feature">
+              </div>
+            </div>
+            <button type="button" id="add-feature" class="btn btn-sm btn-outline">
+              <i class="fas fa-plus"></i> Add Feature
+            </button>
+          </div>
+          
+          <h3 class="form-subtitle">Location Information</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city" class="form-label">City</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-city"></i>
+                <input type="text" id="city" name="city" class="form-control" placeholder="Enter city" required>
+              </div>
+              <div class="invalid-feedback">Please enter your city.</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="state" class="form-label">State/Province</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-map"></i>
+                <input type="text" id="state" name="state" class="form-control" placeholder="Enter state/province" required>
+              </div>
+              <div class="invalid-feedback">Please enter your state/province.</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="country" class="form-label">Country</label>
+              <div class="input-group">
+                <i class="input-icon fas fa-globe"></i>
+                <input type="text" id="country" name="country" class="form-control" placeholder="Enter country" required>
+              </div>
+              <div class="invalid-feedback">Please enter your country.</div>
+            </div>
+          </div>
+          
+          <h3 class="form-subtitle">Images</h3>
+          
+          <div class="form-group">
+            <label class="form-label">Upload Photos (Max 10)</label>
+            <div class="dropzone" id="image-dropzone">
+              <div class="dz-message">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag and drop images here or click to upload</p>
+                <span class="note">(Maximum 10 photos, 3MB each)</span>
+              </div>
+            </div>
+            <div class="invalid-feedback">Please upload at least one image of your motorcycle.</div>
+          </div>
+          
+          <div class="image-preview-container" id="image-previews"></div>
+          
+          <div class="form-group form-check mt-4">
+            <input type="checkbox" id="terms" name="terms" class="form-check-input" required>
+            <label for="terms" class="form-check-label">I confirm that all the information provided is accurate and I agree to the <a href="/terms.html">Terms of Service</a> and <a href="/privacy.html">Privacy Policy</a></label>
+            <div class="invalid-feedback">You must agree to the terms and conditions.</div>
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary form-btn">
+              <i class="fas fa-check"></i> Submit Listing
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  <% } %>
+
+  <!-- Selling Tips Section -->
+  <section class="selling-tips section">
+    <div class="container">
+      <h2 class="section-title">Tips for Selling Your Motorcycle Fast</h2>
+      
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-camera"></i>
+          </div>
+          <h3>Take Great Photos</h3>
+          <p>Upload clear, well-lit photos from multiple angles. Include close-ups of any special features and any areas with damage for transparency.</p>
+        </div>
+        
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-pen"></i>
+          </div>
+          <h3>Write a Detailed Description</h3>
+          <p>Include information about modifications, maintenance history, and why you're selling. Be honest about the condition and any issues.</p>
+        </div>
+        
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-tag"></i>
+          </div>
+          <h3>Price It Right</h3>
+          <p>Research similar models to set a competitive price. Consider leaving some room for negotiation.</p>
+        </div>
+        
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <h3>Provide Documentation</h3>
+          <p>Mention if you have service records, original manuals, or clean title. This builds trust with potential buyers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a href="/" class="footer-logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+          <p>The professional platform for motorcycle enthusiasts to buy, sell, and service bikes.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/bikes">Motorcycles</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/sell">Sell</a></li>
+            <li><a href="/login.html">Login</a></li>
+            <li><a href="/register.html">Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Categories</h3>
+          <ul>
+            <li><a href="/bikes?category=Sport">Sport</a></li>
+            <li><a href="/bikes?category=Cruiser">Cruiser</a></li>
+            <li><a href="/bikes?category=Touring">Touring</a></li>
+            <li><a href="/bikes?category=Off-road">Off-road</a></li>
+            <li><a href="/bikes?category=Scooter">Scooter</a></li>
+            <li><a href="/bikes?category=Electric">Electric</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="footer-title">Contact Us</h3>
+          <ul>
+            <li>
+              <i class="fas fa-map-marker-alt"></i>
+              <span>123 Bike Street, City, Country</span>
+            </li>
+            <li>
+              <i class="fas fa-phone-alt"></i>
+              <span>+1 (555) 123-4567</span>
+            </li>
+            <li>
+              <i class="fas fa-envelope"></i>
+              <span>info@bikersportal.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 BikersPortal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <button id="scroll-top-btn" class="scroll-top" style="display: none;"><i class="fas fa-chevron-up"></i></button>
+
+  <!-- Alert Container -->
+  <div id="alert-container" class="alert-container"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Form elements
+      const sellForm = document.getElementById('sell-form');
+      const titleInput = document.getElementById('title');
+      const brandSelect = document.getElementById('brand');
+      const modelInput = document.getElementById('model');
+      const yearInput = document.getElementById('year');
+      const categorySelect = document.getElementById('category');
+      const priceInput = document.getElementById('price');
+      const conditionSelect = document.getElementById('condition');
+      const mileageInput = document.getElementById('mileage');
+      const engineCapacityInput = document.getElementById('engineCapacity');
+      const descriptionInput = document.getElementById('description');
+      const cityInput = document.getElementById('city');
+      const stateInput = document.getElementById('state');
+      const countryInput = document.getElementById('country');
+      const termsCheckbox = document.getElementById('terms');
+      const imagePreviews = document.getElementById('image-previews');
+      const submitBtn = document.querySelector('button[type="submit"]');
+      const colorInput = document.getElementById('color');
+      const fuelTypeSelect = document.getElementById('fuelType');
+      
+      // Set current year for validation
+      const currentYear = new Date().getFullYear();
+      if (yearInput) {
+        yearInput.setAttribute('max', currentYear + 1);
+      }
+      
+      // Add feature button functionality
+      const addFeatureBtn = document.getElementById('add-feature');
+      const featuresList = document.getElementById('features-list');
+      
+      if (addFeatureBtn && featuresList) {
+        addFeatureBtn.addEventListener('click', () => {
+          const featureCount = featuresList.querySelectorAll('.input-group').length;
+          
+          if (featureCount < 10) {
+            const featureInput = document.createElement('div');
+            featureInput.className = 'input-group mb-2';
+            featureInput.innerHTML = `
+              <input type="text" class="form-control" name="features[]" placeholder="Enter feature">
+              <button type="button" class="btn btn-outline-danger remove-feature">
+                <i class="fas fa-times"></i>
+              </button>
+            `;
+            
+            featuresList.appendChild(featureInput);
+            
+            // Add remove event listener
+            featureInput.querySelector('.remove-feature').addEventListener('click', () => {
+              featuresList.removeChild(featureInput);
+            });
+          } else {
+            showAlert('error', 'You can add a maximum of 10 features.');
+          }
+        });
+      }
+      
+      // Input validation functions
+      function validateTitle() {
+        if (!titleInput) return true;
+        
+        if (!titleInput.value.trim()) {
+          showFieldError(titleInput, 'Title is required');
+          return false;
+        }
+        
+        if (titleInput.value.trim().length < 5) {
+          showFieldError(titleInput, 'Title must be at least 5 characters');
+          return false;
+        }
+        
+        if (titleInput.value.trim().length > 100) {
+          showFieldError(titleInput, 'Title must be less than 100 characters');
+          return false;
+        }
+        
+        clearFieldError(titleInput);
+        return true;
+      }
+      
+      function validateBrand() {
+        if (!brandSelect) return true;
+        
+        if (!brandSelect.value) {
+          showFieldError(brandSelect, 'Please select a brand');
+          return false;
+        }
+        
+        clearFieldError(brandSelect);
+        return true;
+      }
+      
+      function validateModel() {
+        if (!modelInput) return true;
+        
+        if (!modelInput.value.trim()) {
+          showFieldError(modelInput, 'Model is required');
+          return false;
+        }
+        
+        clearFieldError(modelInput);
+        return true;
+      }
+      
+      function validateYear() {
+        if (!yearInput) return true;
+        
+        const year = parseInt(yearInput.value);
+        
+        if (!yearInput.value.trim()) {
+          showFieldError(yearInput, 'Year is required');
+          return false;
+        }
+        
+        if (isNaN(year) || year < 1900 || year > currentYear + 1) {
+          showFieldError(yearInput, `Year must be between 1900 and ${currentYear + 1}`);
+          return false;
+        }
+        
+        clearFieldError(yearInput);
+        return true;
+      }
+      
+      function validateCategory() {
+        if (!categorySelect) return true;
+        
+        if (!categorySelect.value) {
+          showFieldError(categorySelect, 'Please select a category');
+          return false;
+        }
+        
+        clearFieldError(categorySelect);
+        return true;
+      }
+      
+      function validatePrice() {
+        if (!priceInput) return true;
+        
+        const price = parseInt(priceInput.value);
+        
+        if (!priceInput.value.trim()) {
+          showFieldError(priceInput, 'Price is required');
+          return false;
+        }
+        
+        if (isNaN(price) || price <= 0) {
+          showFieldError(priceInput, 'Please enter a valid price');
+          return false;
+        }
+        
+        clearFieldError(priceInput);
+        return true;
+      }
+      
+      function validateCondition() {
+        if (!conditionSelect) return true;
+        
+        if (!conditionSelect.value) {
+          showFieldError(conditionSelect, 'Please select a condition');
+          return false;
+        }
+        
+        clearFieldError(conditionSelect);
+        return true;
+      }
+      
+      function validateMileage() {
+        if (!mileageInput) return true;
+        
+        const mileage = parseInt(mileageInput.value);
+        
+        if (!mileageInput.value.trim()) {
+          showFieldError(mileageInput, 'Mileage is required');
+          return false;
+        }
+        
+        if (isNaN(mileage) || mileage < 0) {
+          showFieldError(mileageInput, 'Please enter a valid mileage');
+          return false;
+        }
+        
+        clearFieldError(mileageInput);
+        return true;
+      }
+      
+      function validateEngineCapacity() {
+        if (!engineCapacityInput) return true;
+        
+        const capacity = parseInt(engineCapacityInput.value);
+        
+        if (!engineCapacityInput.value.trim()) {
+          showFieldError(engineCapacityInput, 'Engine capacity is required');
+          return false;
+        }
+        
+        if (isNaN(capacity) || capacity <= 0) {
+          showFieldError(engineCapacityInput, 'Please enter a valid engine capacity');
+          return false;
+        }
+        
+        clearFieldError(engineCapacityInput);
+        return true;
+      }
+      
+      function validateDescription() {
+        if (!descriptionInput) return true;
+        
+        if (!descriptionInput.value.trim()) {
+          showFieldError(descriptionInput, 'Description is required');
+          return false;
+        }
+        
+        if (descriptionInput.value.trim().length < 20) {
+          showFieldError(descriptionInput, 'Description must be at least 20 characters');
+          return false;
+        }
+        
+        if (descriptionInput.value.trim().length > 2000) {
+          showFieldError(descriptionInput, 'Description must be less than 2000 characters');
+          return false;
+        }
+        
+        clearFieldError(descriptionInput);
+        return true;
+      }
+      
+      function validateLocation() {
+        let isValid = true;
+        
+        if (cityInput && !cityInput.value.trim()) {
+          showFieldError(cityInput, 'City is required');
+          isValid = false;
+        } else if (cityInput) {
+          clearFieldError(cityInput);
+        }
+        
+        if (stateInput && !stateInput.value.trim()) {
+          showFieldError(stateInput, 'State/Province is required');
+          isValid = false;
+        } else if (stateInput) {
+          clearFieldError(stateInput);
+        }
+        
+        if (countryInput && !countryInput.value.trim()) {
+          showFieldError(countryInput, 'Country is required');
+          isValid = false;
+        } else if (countryInput) {
+          clearFieldError(countryInput);
+        }
+        
+        return isValid;
+      }
+      
+      function validateImages() {
+        if (!imagePreviews) return true;
+        
+        const images = imagePreviews.querySelectorAll('.image-preview-item');
+        
+        if (images.length === 0) {
+          showAlert('error', 'Please upload at least one image of your motorcycle');
+          return false;
+        }
+        
+        return true;
+      }
+      
+      function validateTerms() {
+        if (!termsCheckbox) return true;
+        
+        if (!termsCheckbox.checked) {
+          showFieldError(termsCheckbox, 'You must accept the terms and conditions');
+          return false;
+        }
+        
+        clearFieldError(termsCheckbox);
+        return true;
+      }
+      
+      function validateColor() {
+        if (!colorInput) return true;
+        clearFieldError(colorInput);
+        return true; // Color is optional
+      }
+      
+      function validateFuelType() {
+        if (!fuelTypeSelect) return true;
+        clearFieldError(fuelTypeSelect);
+        return true; // FuelType has a default value
+      }
+      
+      // Helper functions
+      function showFieldError(field, message) {
+        if (!field) return;
+        
+        field.classList.add('is-invalid');
+        
+        // Find or create feedback element
+        let feedback = field.nextElementSibling;
+        if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+          feedback = document.createElement('div');
+          feedback.className = 'invalid-feedback';
+          field.parentNode.appendChild(feedback);
+        }
+        
+        feedback.textContent = message;
+      }
+      
+      function clearFieldError(field) {
+        if (!field) return;
+        
+        field.classList.remove('is-invalid');
+      }
+      
+      // Sell form submission
+      if (sellForm) {
+        // Add input validation events
+        if (titleInput) titleInput.addEventListener('blur', validateTitle);
+        if (brandSelect) brandSelect.addEventListener('change', validateBrand);
+        if (modelInput) modelInput.addEventListener('blur', validateModel);
+        if (yearInput) yearInput.addEventListener('blur', validateYear);
+        if (categorySelect) categorySelect.addEventListener('change', validateCategory);
+        if (priceInput) priceInput.addEventListener('blur', validatePrice);
+        if (conditionSelect) conditionSelect.addEventListener('change', validateCondition);
+        if (colorInput) colorInput.addEventListener('blur', validateColor);
+        if (fuelTypeSelect) fuelTypeSelect.addEventListener('change', validateFuelType);
+        if (mileageInput) mileageInput.addEventListener('blur', validateMileage);
+        if (engineCapacityInput) engineCapacityInput.addEventListener('blur', validateEngineCapacity);
+        if (descriptionInput) descriptionInput.addEventListener('blur', validateDescription);
+        if (cityInput) cityInput.addEventListener('blur', validateLocation);
+        if (stateInput) stateInput.addEventListener('blur', validateLocation);
+        if (countryInput) countryInput.addEventListener('blur', validateLocation);
+        if (termsCheckbox) termsCheckbox.addEventListener('change', validateTerms);
+        
+        sellForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          // Validate all fields
+          const isValid = 
+            validateTitle() && 
+            validateBrand() && 
+            validateModel() && 
+            validateYear() && 
+            validateCategory() && 
+            validatePrice() && 
+            validateCondition() &&
+            validateColor() &&
+            validateFuelType() && 
+            validateMileage() && 
+            validateEngineCapacity() && 
+            validateDescription() && 
+            validateLocation() && 
+            validateImages() && 
+            validateTerms();
+          
+          if (!isValid) {
+            // Find first invalid field and scroll to it
+            const firstInvalidField = sellForm.querySelector('.is-invalid');
+            if (firstInvalidField) {
+              firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              firstInvalidField.focus();
+            }
+            return;
+          }
+          
+          // Disable submit button
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+          }
+          
+          // Get form data
+          const formData = new FormData(sellForm);
+          
+          // Process features
+          const featureInputs = document.querySelectorAll('input[name="features[]"]');
+          const features = [];
+          
+          featureInputs.forEach(input => {
+            if (input.value.trim()) {
+              features.push(input.value.trim());
+            }
+          });
+          
+          // Add features array to form data
+          formData.delete('features[]');
+          formData.append('features', JSON.stringify(features));
+          
+          // Process images from preview
+          const imageElements = imagePreviews.querySelectorAll('img');
+          const images = [];
+          
+          // Ensure we have at least one image
+          if (imageElements.length === 0) {
+            showAlert('error', 'Please upload at least one image of your motorcycle');
+            // Re-enable submit button
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Listing';
+            }
+            return;
+          }
+          
+          imageElements.forEach(img => {
+            images.push(img.src);
+          });
+          
+          // Add images array to form data
+          formData.append('images', JSON.stringify(images));
+          
+          // Add location data in the format expected by the API
+          formData.delete('city');
+          formData.delete('state');
+          formData.delete('country');
+          const locationString = `${cityInput.value || ''}, ${stateInput.value || ''}, ${countryInput.value || ''}`.trim();
+          formData.append('location', locationString);
+          
+          // Add missing required fields
+          if (!formData.get('color')) {
+            formData.append('color', 'Unspecified');
+          }
+          
+          if (!formData.get('fuelType')) {
+            formData.append('fuelType', 'Petrol'); // Default fuel type
+          }
+          
+          // Convert string numbers to actual numbers
+          formData.set('year', parseInt(formData.get('year')));
+          formData.set('price', parseInt(formData.get('price')));
+          formData.set('mileage', parseInt(formData.get('mileage')));
+          formData.set('engineCapacity', parseInt(formData.get('engineCapacity')));
+          
+          // Prepare imageDataUrls for proper processing on server
+          // Find the primary image (with primary class)
+          const primaryImageElement = imagePreviews.querySelector('.image-preview-item.primary img');
+          const primaryImageSrc = primaryImageElement ? primaryImageElement.src : (images[0] || null);
+          
+          const imageDataUrls = images.map(src => ({ 
+            dataUrl: src, 
+            isPrimary: src === primaryImageSrc
+          }));
+          
+          // Make sure at least one image is marked as primary
+          if (imageDataUrls.length > 0 && !imageDataUrls.some(img => img.isPrimary)) {
+            imageDataUrls[0].isPrimary = true;
+          }
+          
+          formData.append('imageDataUrls', JSON.stringify(imageDataUrls));
+          
+          try {
+            // Log form data for debugging
+            console.log('Form data being sent:');
+            for (let pair of formData.entries()) {
+              console.log(pair[0], typeof pair[1] === 'string' && pair[1].length > 100 ? 
+                `${pair[1].substring(0, 100)}... (truncated)` : pair[1]);
+            }
+            
+            // Extract data for JSON submission instead of FormData
+            const jsonData = {};
+            for (let [key, value] of formData.entries()) {
+              // Try to parse JSON strings
+              if (typeof value === 'string' && 
+                  (key === 'features' || key === 'images' || key === 'imageDataUrls')) {
+                try {
+                  jsonData[key] = JSON.parse(value);
+                } catch (e) {
+                  jsonData[key] = value;
+                }
+              } else {
+                jsonData[key] = value;
+              }
+            }
+            
+            // Make sure imageDataUrls exists and has items
+            if (!jsonData.imageDataUrls || jsonData.imageDataUrls.length === 0) {
+              throw new Error('Please add at least one image for your bike listing');
+            }
+            
+            console.log('JSON data being submitted:', jsonData);
+            
+            // Submit form
+            const response = await fetch(sellForm.action, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(jsonData),
+              credentials: 'same-origin'
+            });
+            
+            // Log for debugging
+            console.log('Form submitted', response.status);
+            
+            let result;
+            try {
+              result = await response.json();
+            } catch (err) {
+              console.error('Error parsing response:', err);
+              throw new Error('Could not parse server response. Please try again later.');
+            }
+            
+            // Log response
+            console.log('Response:', result);
+            
+            if (result.success) {
+              showAlert('success', 'Your motorcycle has been listed successfully!');
+              
+              // Redirect to my listings page instead of individual bike page to avoid errors
+              setTimeout(() => {
+                window.location.href = '/dashboard/bikes';
+              }, 2000);
+            } else {
+              throw new Error(result.error || 'Failed to create listing');
+            }
+          } catch (error) {
+            console.error('Error submitting form:', error);
+            showAlert('error', error.message || 'There was an error submitting your listing. Please try again.');
+            
+            // Re-enable submit button
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Listing';
+            }
+          }
+        });
+      }
+      
+      // Image upload and preview
+      const imageDropzone = document.getElementById('image-dropzone');
+      
+      if (imageDropzone && imagePreviews) {
+        // Handle file drop
+        imageDropzone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          imageDropzone.classList.add('dragover');
+        });
+        
+        imageDropzone.addEventListener('dragleave', () => {
+          imageDropzone.classList.remove('dragover');
+        });
+        
+        imageDropzone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          imageDropzone.classList.remove('dragover');
+          
+          if (e.dataTransfer.files.length > 0) {
+            handleFiles(e.dataTransfer.files);
+          }
+        });
+        
+        // Handle file input click
+        imageDropzone.addEventListener('click', () => {
+          const fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.multiple = true;
+          fileInput.accept = 'image/*';
+          
+          fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+              handleFiles(e.target.files);
+            }
+          });
+          
+          fileInput.click();
+        });
+        
+        // Handle files function
+        function handleFiles(files) {
+          const currentFiles = imagePreviews.querySelectorAll('.image-preview-item').length;
+          
+          if (currentFiles + files.length > 10) {
+            showAlert('error', 'You can upload a maximum of 10 images.');
+            return;
+          }
+          
+          Array.from(files).forEach(file => {
+            if (!file.type.match('image.*')) {
+              showAlert('error', 'Please upload only image files.');
+              return;
+            }
+            
+            if (file.size > 3 * 1024 * 1024) {
+              showAlert('error', 'Image size should not exceed 3MB.');
+              return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+              const previewItem = document.createElement('div');
+              previewItem.className = 'image-preview-item';
+              previewItem.innerHTML = `
+                <img src="${e.target.result}" alt="Motorcycle Image">
+                <button type="button" class="remove-image">
+                  <i class="fas fa-times"></i>
+                </button>
+                <button type="button" class="set-primary-image" title="Set as primary image">
+                  <i class="fas fa-star"></i>
+                </button>
+              `;
+              
+              imagePreviews.appendChild(previewItem);
+              
+              // Set first image as primary by default
+              if (imagePreviews.querySelectorAll('.image-preview-item').length === 1) {
+                previewItem.classList.add('primary');
+              }
+              
+              // Add remove event listener
+              previewItem.querySelector('.remove-image').addEventListener('click', () => {
+                imagePreviews.removeChild(previewItem);
+              });
+              
+              // Add primary image event listener
+              previewItem.querySelector('.set-primary-image').addEventListener('click', () => {
+                // Remove primary class from all items
+                document.querySelectorAll('.image-preview-item').forEach(item => {
+                  item.classList.remove('primary');
+                });
+                
+                // Add primary class to this item
+                previewItem.classList.add('primary');
+                
+                // Move this item to the first position
+                imagePreviews.prepend(previewItem);
+              });
+            };
+            
+            reader.readAsDataURL(file);
+          });
+        }
+      }
+      
+      // Alert function
+      function showAlert(type, message) {
+        const alertContainer = document.getElementById('alert-container');
+        
+        if (alertContainer) {
+          // Create alert element
+          const alertElement = document.createElement('div');
+          alertElement.className = `alert alert-${type}`;
+          alertElement.innerHTML = `
+            <div class="alert-content">
+              <i class="alert-icon fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+              <span class="alert-message">${message}</span>
+            </div>
+            <button class="alert-close">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          // Add alert to container
+          alertContainer.appendChild(alertElement);
+          
+          // Add click event to close button
+          const closeButton = alertElement.querySelector('.alert-close');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => {
+              alertContainer.removeChild(alertElement);
+            });
+          }
+          
+          // Auto-remove after 5 seconds
+          setTimeout(() => {
+            if (alertContainer.contains(alertElement)) {
+              alertContainer.removeChild(alertElement);
+            }
+          }, 5000);
+        }
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,429 @@
+/* Seller Profile Styles */
+
+:root {
+  --primary-color: #f44336;
+  --primary-dark: #d32f2f;
+  --secondary-color: #ffc107;
+  --light-gray: #f5f5f5;
+  --medium-gray: #e0e0e0;
+  --dark-gray: #757575;
+  --text-color: #333333;
+  --white: #ffffff;
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --card-radius: 10px;
+}
+
+/* Profile Card */
+.profile-card {
+  background-color: var(--white);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 2rem;
+}
+
+.profile-header {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  height: 180px;
+}
+
+.profile-header-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  color: var(--white);
+}
+
+.profile-image-container {
+  position: relative;
+  margin-top: -60px;
+  padding: 0 1.5rem;
+}
+
+.profile-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid var(--white);
+  box-shadow: var(--box-shadow);
+  object-fit: cover;
+}
+
+.profile-body {
+  padding: 1.5rem;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: -2.5rem;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--dark-gray);
+}
+
+.bio-section {
+  margin-bottom: 1.5rem;
+}
+
+.contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--light-gray);
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.social-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--light-gray);
+  color: var(--dark-gray);
+  transition: all 0.2s ease;
+}
+
+.social-link:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+/* Rating Display */
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.stars i.fas {
+  color: var(--secondary-color);
+}
+
+.stars i.text-muted {
+  color: var(--medium-gray);
+}
+
+.rating-value {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.rating-count {
+  color: var(--dark-gray);
+  font-size: 0.875rem;
+}
+
+/* Tab Navigation */
+.seller-tabs {
+  margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-link {
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+}
+
+.nav-tabs .nav-link.active {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.tab-content {
+  padding-top: 1.5rem;
+}
+
+/* Bikes Grid */
+.bikes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.bike-card {
+  background-color: var(--white);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  transition: transform 0.2s ease;
+}
+
+.bike-card:hover {
+  transform: translateY(-5px);
+}
+
+.bike-image {
+  position: relative;
+  height: 180px;
+}
+
+.bike-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bike-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.bike-badge.available {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+.bike-badge.sold {
+  background-color: var(--dark-gray);
+  color: var(--white);
+}
+
+.bike-content {
+  padding: 1rem;
+}
+
+.bike-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bike-subtitle {
+  font-size: 0.875rem;
+  color: var(--dark-gray);
+  margin-bottom: 1rem;
+}
+
+.bike-price {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--primary-color);
+}
+
+.bike-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.bike-meta-item {
+  background-color: var(--light-gray);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+/* Reviews Styles */
+.review-card {
+  background-color: var(--white);
+  border-radius: var(--card-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 1.5rem;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.reviewer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.reviewer-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.reviewer-name {
+  margin-bottom: 0.25rem;
+}
+
+.review-date {
+  color: var(--dark-gray);
+}
+
+.review-content {
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* Review Form */
+.review-form-card {
+  background-color: var(--light-gray);
+  border-radius: var(--card-radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.rating-input {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.rating-input input {
+  display: none;
+}
+
+.rating-input label {
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0 0.25rem;
+  color: var(--medium-gray);
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label,
+.rating-input input:checked ~ label {
+  color: var(--secondary-color);
+}
+
+.review-textarea {
+  resize: none;
+  border-radius: 8px;
+  border: 1px solid var(--medium-gray);
+  padding: 0.75rem;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.pagination .page-link {
+  border: none;
+  margin: 0 0.25rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+/* Message Modal */
+.message-form textarea {
+  resize: none;
+  min-height: 150px;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .profile-actions {
+    position: relative;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+  
+  .profile-stats {
+    flex-wrap: wrap;
+  }
+  
+  .stat-item {
+    width: 50%;
+    margin-bottom: 1rem;
+  }
+  
+  .bikes-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-image {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .contact-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+} 

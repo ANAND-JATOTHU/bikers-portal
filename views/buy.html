@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buy Motorcycles - Bikers Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="/" class="logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+        
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="menu">
+          <li class="menu-item"><a href="/bikes" class="menu-link active">Motorcycles</a></li>
+          <li class="menu-item"><a href="/services" class="menu-link">Services</a></li>
+          <li class="menu-item"><a href="/sell" class="menu-link">Sell</a></li>
+          <% if (currentUser) { %>
+            <li class="menu-item dropdown">
+              <a href="#" class="menu-link dropdown-toggle">
+                <i class="fas fa-user-circle"></i> <%= currentUser.firstName %>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="/dashboard/profile"><i class="fas fa-user"></i> My Profile</a></li>
+                <li><a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+              </ul>
+            </li>
+          <% } else { %>
+            <li class="menu-item"><a href="/login.html" class="menu-link">Login</a></li>
+            <li class="menu-item"><a href="/register.html" class="btn btn-primary menu-button">Register</a></li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Buy Motorcycles</h1>
+      <p>Browse our collection of quality motorcycles from verified sellers</p>
+    </div>
+  </section>
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <div class="container">
+      <div class="filters-container">
+        <form id="filters-form" class="filters-form">
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="category">Category</label>
+              <select id="category" name="category" class="form-control">
+                <option value="">All Categories</option>
+                <option value="Sport">Sport</option>
+                <option value="Cruiser">Cruiser</option>
+                <option value="Touring">Touring</option>
+                <option value="Off-road">Off-road</option>
+                <option value="Scooter">Scooter</option>
+                <option value="Electric">Electric</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label for="brand">Brand</label>
+              <select id="brand" name="brand" class="form-control">
+                <option value="">All Brands</option>
+                <option value="Honda">Honda</option>
+                <option value="Yamaha">Yamaha</option>
+                <option value="Kawasaki">Kawasaki</option>
+                <option value="Suzuki">Suzuki</option>
+                <option value="Harley-Davidson">Harley-Davidson</option>
+                <option value="BMW">BMW</option>
+                <option value="Ducati">Ducati</option>
+                <option value="KTM">KTM</option>
+                <option value="Triumph">Triumph</option>
+                <option value="Royal Enfield">Royal Enfield</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label for="priceRange">Price Range</label>
+              <div class="price-inputs">
+                <input type="number" id="minPrice" name="minPrice" class="form-control" placeholder="Min">
+                <span>-</span>
+                <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="Max">
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <label for="condition">Condition</label>
+              <select id="condition" name="condition" class="form-control">
+                <option value="">Any Condition</option>
+                <option value="New">New</option>
+                <option value="Like New">Like New</option>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="yearRange">Year Range</label>
+              <div class="year-inputs">
+                <input type="number" id="minYear" name="minYear" class="form-control" placeholder="From" min="1900" max="2099">
+                <span>-</span>
+                <input type="number" id="maxYear" name="maxYear" class="form-control" placeholder="To" min="1900" max="2099">
+              </div>
+            </div>
+            
+            <div class="filter-group">
+              <label for="engineSize">Engine Size (cc)</label>
+              <select id="engineSize" name="engineSize" class="form-control">
+                <option value="">Any Size</option>
+                <option value="0-250">Up to 250cc</option>
+                <option value="251-500">251cc - 500cc</option>
+                <option value="501-750">501cc - 750cc</option>
+                <option value="751-1000">751cc - 1000cc</option>
+                <option value="1001+">Above 1000cc</option>
+              </select>
+            </div>
+            
+            <div class="filter-group">
+              <label for="location">Location</label>
+              <input type="text" id="location" name="location" class="form-control" placeholder="City, State or Country">
+            </div>
+            
+            <div class="filter-actions">
+              <button type="submit" class="btn btn-primary">Apply Filters</button>
+              <button type="reset" class="btn btn-outline">Reset</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bikes Listing -->
+  <section class="bikes-listing section">
+    <div class="container">
+      <div class="listing-header">
+        <div class="results-count">
+          <span id="bikes-count">0</span> motorcycles found
+        </div>
+        <div class="sorting">
+          <label for="sortBy">Sort by:</label>
+          <select id="sortBy" class="form-control">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="price_low">Price: Low to High</option>
+            <option value="price_high">Price: High to Low</option>
+            <option value="year_new">Year: Newest First</option>
+            <option value="year_old">Year: Oldest First</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="bikes-grid" id="bikes-container">
+        <!-- Loading Indicator -->
+        <div class="loading-container" id="loading-indicator">
+          <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <p>Loading motorcycles...</p>
+        </div>
+        
+        <!-- Bikes will be loaded here via JavaScript -->
+      </div>
+      
+      <!-- Pagination -->
+      <div class="pagination-container" id="pagination">
+        <!-- Pagination will be generated here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- No Results Message (hidden by default) -->
+  <section class="no-results section" id="no-results" style="display: none;">
+    <div class="container text-center">
+      <i class="fas fa-search-minus no-results-icon"></i>
+      <h2>No Motorcycles Found</h2>
+      <p>We couldn't find any motorcycles matching your search criteria.</p>
+      <button id="clear-filters" class="btn btn-primary">Clear All Filters</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a href="/" class="footer-logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+          <p>The professional platform for motorcycle enthusiasts to buy, sell, and service bikes.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/bikes">Motorcycles</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/sell">Sell</a></li>
+            <li><a href="/login.html">Login</a></li>
+            <li><a href="/register.html">Register</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Categories</h3>
+          <ul>
+            <li><a href="/bikes?category=Sport">Sport</a></li>
+            <li><a href="/bikes?category=Cruiser">Cruiser</a></li>
+            <li><a href="/bikes?category=Touring">Touring</a></li>
+            <li><a href="/bikes?category=Off-road">Off-road</a></li>
+            <li><a href="/bikes?category=Scooter">Scooter</a></li>
+            <li><a href="/bikes?category=Electric">Electric</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="footer-title">Contact Us</h3>
+          <ul>
+            <li>
+              <i class="fas fa-map-marker-alt"></i>
+              <span>123 Bike Street, City, Country</span>
+            </li>
+            <li>
+              <i class="fas fa-phone-alt"></i>
+              <span>+1 (555) 123-4567</span>
+            </li>
+            <li>
+              <i class="fas fa-envelope"></i>
+              <span>info@bikersportal.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 BikersPortal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <button id="scroll-top-btn" class="scroll-top" style="display: none;"><i class="fas fa-chevron-up"></i></button>
+
+  <!-- Alert Container -->
+  <div id="alert-container" class="alert-container"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Elements
+      const bikesContainer = document.getElementById('bikes-container');
+      const bikesCount = document.getElementById('bikes-count');
+      const loadingIndicator = document.getElementById('loading-indicator');
+      const noResults = document.getElementById('no-results');
+      const pagination = document.getElementById('pagination');
+      const filtersForm = document.getElementById('filters-form');
+      const clearFiltersBtn = document.getElementById('clear-filters');
+      const sortBySelect = document.getElementById('sortBy');
+      
+      // Current page and filters state
+      let currentPage = 1;
+      let currentFilters = {};
+      let currentSort = 'newest';
+      
+      // Fetch bikes from API
+      async function fetchBikes() {
+        try {
+          // Show loading
+          document.getElementById('loading-indicator').style.display = 'flex';
+          document.getElementById('no-results').style.display = 'none';
+          bikesContainer.innerHTML = '';
+          
+          // Build query params
+          let queryParams = new URLSearchParams();
+          queryParams.append('page', currentPage);
+          queryParams.append('limit', 9);
+          queryParams.append('sort', currentSort);
+          
+          // Add filters
+          for (const [key, value] of Object.entries(currentFilters)) {
+            queryParams.append(key, value);
+          }
+          
+          // Fetch bikes
+          const response = await fetch(`/api/bikes?${queryParams.toString()}`);
+          const data = await response.json();
+          
+          // Hide loading
+          document.getElementById('loading-indicator').style.display = 'none';
+          
+          if (data.success) {
+            // Update bikes count
+            bikesCount.textContent = data.total;
+            
+            if (data.bikes.length === 0) {
+              // Show no results message
+              document.getElementById('no-results').style.display = 'block';
+            } else {
+              // Render bikes
+              bikesContainer.innerHTML = '';
+              
+              data.bikes.forEach(bike => {
+                bikesContainer.innerHTML += generateBikeCard(bike);
+              });
+              
+              // Generate pagination
+              generatePagination(data.total, data.limit, data.page);
+            }
+          } else {
+            throw new Error(data.error || 'Failed to fetch bikes');
+          }
+        } catch (error) {
+          console.error('Error fetching bikes:', error);
+          document.getElementById('loading-indicator').style.display = 'none';
+          showAlert('error', 'Failed to load motorcycles. Please try again.');
+        }
+      }
+      
+      // Create bike card HTML
+      function createBikeCard(bike) {
+        return `
+          <div class="bike-card">
+            <div class="bike-image">
+              <img src="${bike.images[0] || '/images/placeholder-bike.jpg'}" alt="${bike.title}">
+              <div class="bike-price">₹${bike.price.toLocaleString()}</div>
+              <div class="bike-status ${bike.status.toLowerCase()}">${bike.status}</div>
+              <button class="favorite-btn ${bike.isFavorite ? 'active' : ''}" data-id="${bike._id}">
+                <i class="fas fa-heart"></i>
+              </button>
+            </div>
+            <div class="bike-info">
+              <h3 class="bike-title">${bike.title}</h3>
+              <div class="bike-meta">
+                <div class="bike-location"><i class="fas fa-map-marker-alt"></i> ${bike.location.city}, ${bike.location.country}</div>
+                <div class="bike-year">${bike.year}</div>
+              </div>
+              <div class="bike-details">
+                <div class="bike-detail">
+                  <span>${bike.mileage.toLocaleString()} km</span>
+                  <small>Mileage</small>
+                </div>
+                <div class="bike-detail">
+                  <span>${bike.engineCapacity} cc</span>
+                  <small>Engine</small>
+                </div>
+                <div class="bike-detail">
+                  <span>${bike.condition}</span>
+                  <small>Condition</small>
+                </div>
+              </div>
+              <div class="bike-actions">
+                <a href="/bikes/${bike._id}" class="btn btn-primary">View Details</a>
+                <a href="/bikes/${bike._id}/contact" class="btn btn-outline">Contact Seller</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      // Generate pagination controls
+      function generatePagination(total, limit, currentPage) {
+        const totalPages = Math.ceil(total / limit);
+        
+        if (totalPages <= 1) {
+          pagination.innerHTML = '';
+          return;
+        }
+        
+        let paginationHtml = '<ul class="pagination">';
+        
+        // Previous button
+        paginationHtml += `
+          <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a href="#" class="page-link" data-page="${currentPage - 1}" aria-label="Previous">
+              <i class="fas fa-chevron-left"></i>
+            </a>
+          </li>
+        `;
+        
+        // Page numbers
+        const maxVisiblePages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        
+        if (endPage - startPage + 1 < maxVisiblePages) {
+          startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+        
+        if (startPage > 1) {
+          paginationHtml += `
+            <li class="page-item">
+              <a href="#" class="page-link" data-page="1">1</a>
+            </li>
+          `;
+          
+          if (startPage > 2) {
+            paginationHtml += `
+              <li class="page-item disabled">
+                <span class="page-link">...</span>
+              </li>
+            `;
+          }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+          paginationHtml += `
+            <li class="page-item ${i === currentPage ? 'active' : ''}">
+              <a href="#" class="page-link" data-page="${i}">${i}</a>
+            </li>
+          `;
+        }
+        
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1) {
+            paginationHtml += `
+              <li class="page-item disabled">
+                <span class="page-link">...</span>
+              </li>
+            `;
+          }
+          
+          paginationHtml += `
+            <li class="page-item">
+              <a href="#" class="page-link" data-page="${totalPages}">${totalPages}</a>
+            </li>
+          `;
+        }
+        
+        // Next button
+        paginationHtml += `
+          <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a href="#" class="page-link" data-page="${currentPage + 1}" aria-label="Next">
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </li>
+        `;
+        
+        paginationHtml += '</ul>';
+        pagination.innerHTML = paginationHtml;
+        
+        // Add event listeners to pagination links
+        const pageLinks = pagination.querySelectorAll('.page-link');
+        pageLinks.forEach(link => {
+          if (!link.parentElement.classList.contains('disabled')) {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              const page = parseInt(link.getAttribute('data-page'));
+              currentPage = page;
+              fetchBikes();
+              // Scroll to top of listing
+              document.querySelector('.bikes-listing').scrollIntoView({ behavior: 'smooth' });
+            });
+          }
+        });
+      }
+      
+      // Handle filter form submission
+      if (filtersForm) {
+        filtersForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          
+          const formData = new FormData(filtersForm);
+          currentFilters = {};
+          
+          for (const [key, value] of formData.entries()) {
+            if (value) {
+              currentFilters[key] = value;
+            }
+          }
+          
+          currentPage = 1;
+          fetchBikes();
+        });
+      }
+      
+      // Handle clear filters button
+      if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener('click', () => {
+          filtersForm.reset();
+          currentFilters = {};
+          currentPage = 1;
+          fetchBikes();
+        });
+      }
+      
+      // Handle sort change
+      if (sortBySelect) {
+        sortBySelect.addEventListener('change', () => {
+          currentSort = sortBySelect.value;
+          currentPage = 1;
+          fetchBikes();
+        });
+      }
+      
+      // Initialize by fetching bikes
+      fetchBikes();
+      
+      // Handle favorite button clicks
+      document.addEventListener('click', async (e) => {
+        if (e.target.closest('.favorite-btn')) {
+          const favoriteBtn = e.target.closest('.favorite-btn');
+          const bikeId = favoriteBtn.getAttribute('data-id');
+          
+          try {
+            const response = await fetch(`/api/bikes/${bikeId}/favorite`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+              favoriteBtn.classList.toggle('active');
+              
+              if (data.action === 'added') {
+                showAlert('success', 'Motorcycle added to favorites');
+              } else {
+                showAlert('success', 'Motorcycle removed from favorites');
+              }
+            } else {
+              if (data.error === 'Not authenticated') {
+                showAlert('error', 'Please login to save favorites', () => {
+                  window.location.href = '/login.html';
+                });
+              } else {
+                showAlert('error', data.error || 'Error updating favorites');
+              }
+            }
+          } catch (error) {
+            console.error('Error updating favorites:', error);
+            showAlert('error', 'Failed to update favorites. Please try again.');
+          }
+        }
+      });
+      
+      // Alert function
+      function showAlert(type, message, callback) {
+        const alertContainer = document.getElementById('alert-container');
+        
+        if (alertContainer) {
+          // Create alert element
+          const alertElement = document.createElement('div');
+          alertElement.className = `alert alert-${type}`;
+          alertElement.innerHTML = `
+            <div class="alert-content">
+              <i class="alert-icon fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+              <span class="alert-message">${message}</span>
+            </div>
+            <button class="alert-close">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          // Add alert to container
+          alertContainer.appendChild(alertElement);
+          
+          // Add click event to close button
+          const closeButton = alertElement.querySelector('.alert-close');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => {
+              alertContainer.removeChild(alertElement);
+              if (callback) callback();
+            });
+          }
+          
+          // Auto-remove after 5 seconds
+          setTimeout(() => {
+            if (alertContainer.contains(alertElement)) {
+              alertContainer.removeChild(alertElement);
+              if (callback) callback();
+            }
+          }, 5000);
+        }
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title + ' | BikersPortal' : 'BikersPortal - Motorcycle Marketplace' %></title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/utils.css">
+    
+    <!-- Page-specific CSS -->
+    <% if (typeof page !== 'undefined') { %>
+        <% if (page === 'buy') { %>
+            <link rel="stylesheet" href="/css/buy.css">
+        <% } else if (page === 'bikes') { %>
+            <link rel="stylesheet" href="/css/bikes.css">
+        <% } else if (page === 'sell') { %>
+            <link rel="stylesheet" href="/css/sell.css">
+        <% } else if (page === 'bike-details') { %>
+            <link rel="stylesheet" href="/css/bike-details.css">
+        <% } else if (page === 'dashboard') { %>
+            <link rel="stylesheet" href="/css/dashboard.css">
+        <% } else if (page === 'profile') { %>
+            <link rel="stylesheet" href="/css/profile.css">
+        <% } %>
+    <% } %>
+
+    <style>
+        /* Bikes page specific header styles */
+        .bikes-nav-layout {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .bikes-main-nav {
+            display: flex;
+            align-items: center;
+        }
+        
+        .bikes-main-nav .nav-item {
+            margin-right: 20px;
+        }
+
+        .bikes-main-nav .nav-link {
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .bikes-main-nav .nav-link:hover {
+            background-color: rgba(var(--primary-rgb), 0.1);
+        }
+
+        .bikes-main-nav .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(var(--primary-rgb), 0.1);
+        }
+        
+        /* Dropdown menu styles */
+        .bikes-main-nav .dropdown {
+            position: relative;
+        }
+        
+        .bikes-main-nav .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        .bikes-main-nav .dropdown-toggle i.fa-caret-down {
+            margin-left: 5px;
+            transition: transform 0.2s;
+        }
+        
+        .bikes-main-nav .dropdown.active .dropdown-toggle i.fa-caret-down {
+            transform: rotate(180deg);
+        }
+        
+        .bikes-main-nav .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            display: none;
+            min-width: 220px;
+            padding: 8px 0;
+            margin: 8px 0 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .bikes-main-nav .dropdown.active .dropdown-menu {
+            display: block;
+        }
+        
+        .bikes-main-nav .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            padding: 8px 20px;
+            font-size: 0.95rem;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        
+        .bikes-main-nav .dropdown-menu a:hover {
+            background-color: rgba(var(--primary-rgb), 0.05);
+        }
+        
+        .bikes-main-nav .dropdown-menu a i {
+            width: 20px;
+            margin-right: 10px;
+            font-size: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .bikes-main-nav .dropdown-divider {
+            height: 1px;
+            margin: 8px 0;
+            background-color: #eee;
+        }
+        
+        /* User dropdown menu styles */
+        .navbar-actions .menu-item.dropdown {
+            position: relative;
+        }
+        
+        .navbar-actions .menu-link.dropdown-toggle {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        .navbar-actions .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            z-index: 1000;
+            display: none;
+            min-width: 200px;
+            padding: 8px 0;
+            margin: 8px 0 0;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-actions .dropdown.active .dropdown-menu {
+            display: block;
+        }
+        
+        .navbar-actions .dropdown-menu li {
+            list-style: none;
+        }
+        
+        .navbar-actions .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        
+        .navbar-actions .dropdown-menu a:hover {
+            background-color: rgba(var(--primary-rgb), 0.05);
+        }
+        
+        .navbar-actions .dropdown-menu a i {
+            width: 20px;
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .bikes-nav-layout {
+                flex-direction: column;
+            }
+            
+            .bikes-main-nav {
+                margin-bottom: 15px;
+                overflow-x: auto;
+                white-space: nowrap;
+                width: 100%;
+                padding-bottom: 5px;
+            }
+            
+            .bikes-main-nav .nav-item {
+                margin-right: 10px;
+            }
+            
+            .bikes-main-nav .nav-link {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .bikes-main-nav .dropdown-menu,
+            .navbar-actions .dropdown-menu {
+                position: static;
+                width: 100%;
+                margin-top: 5px;
+                box-shadow: none;
+                border: 1px solid #eee;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Add helper functions for templates -->
+    <% 
+    // Helper function to generate star rating HTML
+    function generateStarRating(rating, maxRating = 5) {
+        let html = '<div class="star-rating">';
+        
+        // Full stars
+        const fullStars = Math.floor(rating);
+        for (let i = 0; i < fullStars; i++) {
+            html += '<i class="fas fa-star"></i>';
+        }
+        
+        // Half star
+        if (rating % 1 >= 0.5) {
+            html += '<i class="fas fa-star-half-alt"></i>';
+        }
+        
+        // Empty stars
+        const emptyStars = maxRating - fullStars - (rating % 1 >= 0.5 ? 1 : 0);
+        for (let i = 0; i < emptyStars; i++) {
+            html += '<i class="far fa-star"></i>';
+        }
+        
+        html += '</div>';
+        return html;
+    }
+    %>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <i class="fas fa-motorcycle"></i> BikersPortal
+                </a>
+                
+                <div class="navbar-menu">
+                    <div class="bikes-nav-layout">
+                        <ul class="bikes-main-nav">
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-toggle">
+                                    <i class="fas fa-motorcycle"></i> Motorcycles <i class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a href="/bikes" class="active">
+                                        <i class="fas fa-th-large"></i> All Motorcycles
+                                    </a>
+                                    <a href="/bikes?category=sport">
+                                        <i class="fas fa-tachometer-alt"></i> Sport Bikes
+                                    </a>
+                                    <a href="/bikes?category=cruiser">
+                                        <i class="fas fa-road"></i> Cruiser Bikes
+                                    </a>
+                                    <a href="/bikes?category=touring">
+                                        <i class="fas fa-route"></i> Touring Bikes
+                                    </a>
+                                    <a href="/bikes?category=off-road">
+                                        <i class="fas fa-mountain"></i> Off-road Bikes
+                                    </a>
+                                    <a href="/bikes?category=scooter">
+                                        <i class="fas fa-cog"></i> Scooters
+                                    </a>
+                                    <a href="/bikes?category=electric">
+                                        <i class="fas fa-bolt"></i> Electric Bikes
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="/bikes?sortBy=newest">
+                                        <i class="fas fa-calendar-alt"></i> Newest Listings
+                                    </a>
+                                    <a href="/bikes?sortBy=price-low">
+                                        <i class="fas fa-tag"></i> Best Deals
+                                    </a>
+                                    <a href="/bikes?condition=new">
+                                        <i class="fas fa-star"></i> Brand New
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="nav-item"><a href="/sell" class="nav-link"><i class="fas fa-tag"></i> Sell</a></li>
+                        </ul>
+                        
+                        <div class="navbar-actions">
+                            <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+                                <ul class="bikes-main-nav">
+                                    <li class="menu-item dropdown">
+                                        <a href="#" class="menu-link dropdown-toggle">
+                                            <i class="fas fa-user-circle"></i> <%= currentUser.firstName || currentUser.username %>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                                            <li><a href="/profile"><i class="fas fa-user"></i> My Profile</a></li>
+                                            <li><a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            <% } else { %>
+                                <a href="/login.html" class="btn btn-outline">Login</a>
+                                <a href="/register.html" class="btn btn-primary">Register</a>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Flash Messages -->
+    <% if (typeof messages !== 'undefined' && messages && (messages.success || messages.error)) { %>
+        <div class="flash-messages">
+            <div class="container">
+                <% if (messages.success) { %>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <%= messages.success %>
+                        <button class="close">&times;</button>
+                    </div>
+                <% } %>
+                
+                <% if (messages.error) { %>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <%= messages.error %>
+                        <button class="close">&times;</button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    <% } %>
+    
+    <!-- Main Content -->
+</body>
+</html> 

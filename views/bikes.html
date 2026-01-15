@@ -1,0 +1,301 @@
+<%- include('partials/bikes-header') %>
+
+<div class="buy-container">
+    <div class="page-header">
+        <h1 class="page-title">Motorcycles for Sale</h1>
+        <p class="page-description">Find your perfect ride from our wide selection of motorcycles.</p>
+    </div>
+
+    <!-- Quick Filters -->
+    <div class="quick-filters">
+        <% if (brands && brands.length) { %>
+            <% brands.slice(0, 5).forEach(brand => { %>
+                <a href="?brand=<%= brand %>" class="quick-filter-btn <%= query.brand === brand ? 'active' : '' %>">
+                    <%= brand %>
+                </a>
+            <% }); %>
+        <% } %>
+        
+        <% if (categories && categories.length) { %>
+            <% categories.slice(0, 5).forEach(category => { %>
+                <a href="?category=<%= category %>" class="quick-filter-btn <%= query.category === category ? 'active' : '' %>">
+                    <%= category %>
+                </a>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <div class="content-grid">
+        <!-- Filter Sidebar -->
+        <div class="filter-sidebar">
+            <button class="close-filter">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <form id="filterForm" class="filter-form" action="/bikes" method="GET">
+                <!-- Search -->
+                <div class="filter-section">
+                    <h3 class="filter-title">Search</h3>
+                    <div class="form-group">
+                        <input type="text" name="search" id="search" class="form-control" placeholder="Search motorcycles..." value="<%= query.search || '' %>">
+                    </div>
+                </div>
+                
+                <!-- Price Range -->
+                <div class="filter-section">
+                    <h3 class="filter-title">Price Range</h3>
+                    <div class="range-inputs">
+                        <input type="number" name="minPrice" id="priceMin" placeholder="Min" min="0" value="<%= query.minPrice || '' %>">
+                        <input type="number" name="maxPrice" id="priceMax" placeholder="Max" min="0" value="<%= query.maxPrice || '' %>">
+                    </div>
+                    
+                    <input type="range" id="priceMinSlider" class="range-slider" min="<%= stats?.minPrice || 0 %>" max="<%= stats?.maxPrice || 1000000 %>" value="<%= query.minPrice || stats?.minPrice || 0 %>">
+                    <input type="range" id="priceMaxSlider" class="range-slider" min="<%= stats?.minPrice || 0 %>" max="<%= stats?.maxPrice || 1000000 %>" value="<%= query.maxPrice || stats?.maxPrice || 1000000 %>">
+                    
+                    <div class="range-values">
+                        <span>₹<%= stats?.minPrice || 0 %></span>
+                        <span>₹<%= stats?.maxPrice || 1000000 %></span>
+                    </div>
+                </div>
+                
+                <!-- Year Range -->
+                <div class="filter-section">
+                    <h3 class="filter-title">Year</h3>
+                    <div class="range-inputs">
+                        <input type="number" name="minYear" id="yearMin" placeholder="Min" min="<%= stats?.minYear || 2000 %>" max="<%= stats?.maxYear || new Date().getFullYear() %>" value="<%= query.minYear || '' %>">
+                        <input type="number" name="maxYear" id="yearMax" placeholder="Max" min="<%= stats?.minYear || 2000 %>" max="<%= stats?.maxYear || new Date().getFullYear() %>" value="<%= query.maxYear || '' %>">
+                    </div>
+                    
+                    <input type="range" id="yearMinSlider" class="range-slider" min="<%= stats?.minYear || 2000 %>" max="<%= stats?.maxYear || new Date().getFullYear() %>" value="<%= query.minYear || stats?.minYear || 2000 %>">
+                    <input type="range" id="yearMaxSlider" class="range-slider" min="<%= stats?.minYear || 2000 %>" max="<%= stats?.maxYear || new Date().getFullYear() %>" value="<%= query.maxYear || stats?.maxYear || new Date().getFullYear() %>">
+                    
+                    <div class="range-values">
+                        <span><%= stats?.minYear || 2000 %></span>
+                        <span><%= stats?.maxYear || new Date().getFullYear() %></span>
+                    </div>
+                </div>
+                
+                <!-- Brand -->
+                <div class="filter-section">
+                    <h3 class="filter-title">Brand</h3>
+                    <div class="form-group">
+                        <select name="brand" class="form-select">
+                            <option value="">All Brands</option>
+                            <% if (brands && brands.length) { %>
+                                <% brands.forEach(brand => { %>
+                                    <option value="<%= brand %>" <%= query.brand === brand ? 'selected' : '' %>><%= brand %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Category -->
+                <div class="filter-section">
+                    <h3 class="filter-title">Category</h3>
+                    <div class="form-group">
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            <% if (categories && categories.length) { %>
+                                <% categories.forEach(category => { %>
+                                    <option value="<%= category %>" <%= query.category === category ? 'selected' : '' %>><%= category %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Condition -->
+                <div class="filter-section">
+                    <h3 class="filter-title">Condition</h3>
+                    <div class="form-group">
+                        <select name="condition" class="form-select">
+                            <option value="">Any Condition</option>
+                            <% if (conditions && conditions.length) { %>
+                                <% conditions.forEach(condition => { %>
+                                    <option value="<%= condition %>" <%= query.condition === condition ? 'selected' : '' %>><%= condition %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Location -->
+                <div class="filter-section">
+                    <h3 class="filter-title">Location</h3>
+                    <div class="form-group">
+                        <select name="location" class="form-select">
+                            <option value="">Any Location</option>
+                            <% if (locations && locations.length) { %>
+                                <% locations.forEach(location => { %>
+                                    <option value="<%= location %>" <%= query.location === location ? 'selected' : '' %>><%= location %></option>
+                                <% }); %>
+                            <% } %>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <button type="submit" class="btn-filter btn-apply">Apply Filters</button>
+                    <button type="button" id="resetFilter" class="btn-filter btn-reset">Reset</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="content-area">
+            <div class="toolbar">
+                <div class="results-count">
+                    <span>Showing <strong><%= bikes.length %></strong> of <strong><%= totalBikes %></strong> motorcycles</span>
+                </div>
+                
+                <div class="tools-group">
+                    <button id="filterToggle" class="filter-toggle-btn">
+                        <i class="fas fa-filter"></i> Filters
+                    </button>
+                    
+                    <select id="sortBy" name="sortBy" class="sort-select">
+                        <option value="newest" <%= query.sortBy === 'newest' || !query.sortBy ? 'selected' : '' %>>Newest First</option>
+                        <option value="price-low" <%= query.sortBy === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
+                        <option value="price-high" <%= query.sortBy === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
+                        <option value="year-new" <%= query.sortBy === 'year-new' ? 'selected' : '' %>>Year: Newest First</option>
+                        <option value="year-old" <%= query.sortBy === 'year-old' ? 'selected' : '' %>>Year: Oldest First</option>
+                    </select>
+                    
+                    <div class="view-toggle">
+                        <button type="button" class="view-toggle-btn active" data-view="grid">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button type="button" class="view-toggle-btn" data-view="list">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bike Grid -->
+            <div class="bike-grid grid-view">
+                <% if (bikes && bikes.length > 0) { %>
+                    <% bikes.forEach(bike => { %>
+                        <div class="bike-card">
+                            <div class="bike-image-container">
+                                <img src="<%= bike.thumbnailImage || (bike.images && bike.images.length ? bike.images[0] : '/images/default-bike.jpg') %>" 
+                                     alt="<%= bike.title %>" 
+                                     class="bike-image"
+                                     onerror="this.src='/images/default-bike.jpg';">
+                                <div class="bike-status"><%= bike.condition %></div>
+                                <button class="bike-favorite favorite-btn" data-bike-id="<%= bike._id %>">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <% if (bike.isNew) { %>
+                                <div class="bike-badge new-arrival">New Arrival</div>
+                                <% } else if (bike.isHotDeal) { %>
+                                <div class="bike-badge hot-deal">Hot Deal</div>
+                                <% } %>
+                                <div class="quick-view-btn" data-bike-id="<%= bike._id %>">Quick View</div>
+                            </div>
+                            <div class="bike-content">
+                                <div class="bike-brand"><%= bike.brand %></div>
+                                <h3 class="bike-title"><%= bike.title %></h3>
+                                
+                                <div class="bike-meta">
+                                    <div class="bike-meta-item">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span><%= bike.year %></span>
+                                    </div>
+                                    <div class="bike-meta-item">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                        <span><%= bike.mileage.toLocaleString() %> km</span>
+                                    </div>
+                                    <div class="bike-meta-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span><%= bike.location %></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="bike-description">
+                                    <%= bike.description %>
+                                </div>
+
+                                <% if (bike.originalPrice && bike.originalPrice > bike.price) { %>
+                                <div class="bike-discount">
+                                    <span class="original-price">₹<%= bike.originalPrice.toLocaleString() %></span>
+                                    <span class="discount-percent"><%= Math.round((bike.originalPrice - bike.price) / bike.originalPrice * 100) %>% OFF</span>
+                                </div>
+                                <% } %>
+                                
+                                <div class="bike-price">₹<%= bike.price.toLocaleString() %></div>
+                                
+                                <div class="bike-actions">
+                                    <a href="/bikes/<%= bike._id %>" class="btn btn-details">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </a>
+                                    <button class="btn btn-favorite" data-bike-id="<%= bike._id %>">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3 class="empty-state-title">No motorcycles found</h3>
+                        <p class="empty-state-text">We couldn't find any motorcycles matching your criteria. Try adjusting your filters or search terms.</p>
+                        <a href="/bikes" class="btn-browse-all">
+                            <i class="fas fa-motorcycle"></i> Browse All Motorcycles
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+            
+            <!-- Pagination -->
+            <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+                <div class="pagination">
+                    <% if (currentPage > 1) { %>
+                        <a href="<%= typeof getPaginationUrl === 'function' ? getPaginationUrl(currentPage - 1) : '?page=' + (currentPage - 1) %>" class="pagination-item">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    <% } else { %>
+                        <span class="pagination-item disabled">
+                            <i class="fas fa-chevron-left"></i>
+                        </span>
+                    <% } %>
+                    
+                    <% 
+                    let startPage = Math.max(1, currentPage - 2);
+                    let endPage = Math.min(startPage + 4, totalPages);
+                    
+                    if (endPage - startPage < 4) {
+                        startPage = Math.max(1, endPage - 4);
+                    }
+                    
+                    for (let i = startPage; i <= endPage; i++) { %>
+                        <% if (i === currentPage) { %>
+                            <span class="pagination-item active"><%= i %></span>
+                        <% } else { %>
+                            <a href="<%= typeof getPaginationUrl === 'function' ? getPaginationUrl(i) : '?page=' + i %>" class="pagination-item"><%= i %></a>
+                        <% } %>
+                    <% } %>
+                    
+                    <% if (currentPage < totalPages) { %>
+                        <a href="<%= typeof getPaginationUrl === 'function' ? getPaginationUrl(currentPage + 1) : '?page=' + (currentPage + 1) %>" class="pagination-item">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    <% } else { %>
+                        <span class="pagination-item disabled">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Include the bikes.js file -->
+<script src="/js/bikes.js"></script>
+
+<%- include('partials/footer') %> 

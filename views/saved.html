@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Items - Bikers Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .profile-section {
+      padding: 60px 0;
+      background-color: #f8f9fa;
+    }
+    
+    .profile-container {
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+      gap: 30px;
+    }
+    
+    .profile-sidebar {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    
+    .profile-photo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #f8f9fa;
+    }
+    
+    .profile-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .profile-menu-item {
+      margin-bottom: 5px;
+    }
+    
+    .profile-menu-link {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-radius: 5px;
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .profile-menu-link:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .profile-menu-link.active {
+      background-color: #e6f7ff;
+      color: #0084ff;
+    }
+    
+    .profile-menu-link i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .profile-content {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    
+    .content-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+      color: #333;
+    }
+    
+    .saved-tabs {
+      display: flex;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .saved-tab {
+      padding: 12px 20px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .saved-tab:hover {
+      color: #333;
+    }
+    
+    .saved-tab.active {
+      color: #0084ff;
+      border-bottom-color: #0084ff;
+    }
+    
+    .saved-items-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    
+    .saved-item {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .saved-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .saved-item-image {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+    }
+    
+    .saved-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    
+    .saved-item:hover .saved-item-image img {
+      transform: scale(1.05);
+    }
+    
+    .saved-item-type {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    
+    .saved-item-price {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: #ff6b35;
+      color: white;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 3px;
+    }
+    
+    .saved-item-info {
+      padding: 15px;
+    }
+    
+    .saved-item-title {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+    }
+    
+    .saved-item-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    
+    .saved-item-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 0;
+    }
+    
+    .empty-state-icon {
+      font-size: 3rem;
+      color: #ddd;
+      margin-bottom: 15px;
+    }
+    
+    .empty-state h3 {
+      margin-bottom: 10px;
+      color: #666;
+    }
+    
+    .empty-state p {
+      color: #888;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 992px) {
+      .saved-items-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .profile-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .saved-items-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="/dashboard" class="logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+        
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="menu">
+          <li class="menu-item"><a href="/bikes" class="menu-link">Motorcycles</a></li>
+          
+          <li class="menu-item"><a href="/sell" class="menu-link">Sell</a></li>
+          <li class="menu-item dropdown">
+            <a href="#" class="menu-link dropdown-toggle">
+              <i class="fas fa-user-circle"></i> <%= currentUser ? currentUser.firstName : 'User' %>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+              <li><a href="/dashboard/profile"><i class="fas fa-user"></i> My Profile</a></li>
+              <li><a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Profile Section -->
+  <section class="profile-section">
+    <div class="container">
+      <div class="profile-container">
+        <!-- Profile Sidebar -->
+        <div class="profile-sidebar">
+          <div class="profile-photo">
+            <img src="<%= currentUser.profileImage || '/images/default-profile.jpg' %>" alt="Profile Photo" class="profile-image">
+          </div>
+          
+          <ul class="profile-menu">
+            <li class="profile-menu-item">
+              <a href="/dashboard/profile" class="profile-menu-link">
+                <i class="fas fa-user"></i> Personal Information
+              </a>
+            </li>
+            <li class="profile-menu-item">
+              <a href="/dashboard/bikes" class="profile-menu-link">
+                <i class="fas fa-motorcycle"></i> My Listings
+              </a>
+            </li>
+            <li class="profile-menu-item">
+              <a href="/dashboard/saved" class="profile-menu-link active">
+                <i class="fas fa-heart"></i> Saved Items
+              </a>
+            </li>
+            <li class="profile-menu-item">
+              <a href="/dashboard/security" class="profile-menu-link">
+                <i class="fas fa-shield-alt"></i> Security
+              </a>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Profile Content -->
+        <div class="profile-content">
+          <h2 class="content-title">Saved Items</h2>
+          
+          <!-- Saved Tabs -->
+          <div class="saved-tabs">
+            <div class="saved-tab active" data-tab="all">All Items</div>
+            <div class="saved-tab" data-tab="bikes">Motorcycles</div>
+            <div class="saved-tab" data-tab="services">Services</div>
+          </div>
+          
+          <!-- Tab Content -->
+          <div id="tab-all" class="tab-content active">
+            <% if (savedItems && savedItems.length > 0) { %>
+              <div class="saved-items-grid">
+                <% savedItems.forEach(item => { %>
+                  <div class="saved-item" data-type="<%= item.type %>">
+                    <div class="saved-item-image">
+                      <span class="saved-item-type"><%= item.type === 'bike' ? 'Motorcycle' : 'Service' %></span>
+                      <img src="<%= item.image %>" alt="<%= item.title %>">
+                      <% if (item.price) { %>
+                        <div class="saved-item-price">$<%= item.price.toLocaleString() %></div>
+                      <% } %>
+                    </div>
+                    <div class="saved-item-info">
+                      <h3 class="saved-item-title"><%= item.title %></h3>
+                      <div class="saved-item-meta">
+                        <% if (item.type === 'bike') { %>
+                          <div><i class="fas fa-calendar-alt"></i> <%= item.year %></div>
+                          <div><i class="fas fa-tachometer-alt"></i> <%= item.mileage.toLocaleString() %> km</div>
+                        <% } else { %>
+                          <div><i class="fas fa-user"></i> <%= item.provider %></div>
+                          <div><i class="fas fa-star"></i> <%= item.rating %> (<%= item.reviewCount %>)</div>
+                        <% } %>
+                      </div>
+                      <div class="saved-item-actions">
+                        <a href="/<%= item.type === 'bike' ? 'bikes' : 'services' %>/<%= item.id %>" class="btn btn-primary btn-sm">View Details</a>
+                        <button class="btn btn-outline-danger btn-sm remove-saved" data-id="<%= item.id %>" data-type="<%= item.type %>">
+                          <i class="fas fa-heart-broken"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-state-icon">
+                  <i class="far fa-heart"></i>
+                </div>
+                <h3>No Saved Items</h3>
+                <p>You haven't saved any items yet. Browse motorcycles and services and click the heart icon to save them for later.</p>
+                <div class="empty-state-actions">
+                  <a href="/bikes" class="btn btn-primary">Browse Motorcycles</a>
+                  <a href="/services" class="btn btn-outline">Browse Services</a>
+                </div>
+              </div>
+            <% } %>
+          </div>
+          
+          <div id="tab-bikes" class="tab-content">
+            <% if (savedBikes && savedBikes.length > 0) { %>
+              <div class="saved-items-grid">
+                <% savedBikes.forEach(bike => { %>
+                  <div class="saved-item">
+                    <div class="saved-item-image">
+                      <span class="saved-item-type">Motorcycle</span>
+                      <img src="<%= bike.image %>" alt="<%= bike.title %>">
+                      <div class="saved-item-price">$<%= bike.price.toLocaleString() %></div>
+                    </div>
+                    <div class="saved-item-info">
+                      <h3 class="saved-item-title"><%= bike.title %></h3>
+                      <div class="saved-item-meta">
+                        <div><i class="fas fa-calendar-alt"></i> <%= bike.year %></div>
+                        <div><i class="fas fa-tachometer-alt"></i> <%= bike.mileage.toLocaleString() %> km</div>
+                      </div>
+                      <div class="saved-item-actions">
+                        <a href="/bikes/<%= bike.id %>" class="btn btn-primary btn-sm">View Details</a>
+                        <button class="btn btn-outline-danger btn-sm remove-saved" data-id="<%= bike.id %>" data-type="bike">
+                          <i class="fas fa-heart-broken"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-state-icon">
+                  <i class="fas fa-motorcycle"></i>
+                </div>
+                <h3>No Saved Motorcycles</h3>
+                <p>You haven't saved any motorcycles yet. Browse motorcycles and click the heart icon to save them for later.</p>
+                <div class="empty-state-actions">
+                  <a href="/bikes" class="btn btn-primary">Browse Motorcycles</a>
+                </div>
+              </div>
+            <% } %>
+          </div>
+          
+          <div id="tab-services" class="tab-content">
+            <% if (savedServices && savedServices.length > 0) { %>
+              <div class="saved-items-grid">
+                <% savedServices.forEach(service => { %>
+                  <div class="saved-item">
+                    <div class="saved-item-image">
+                      <span class="saved-item-type">Service</span>
+                      <img src="<%= service.image %>" alt="<%= service.title %>">
+                      <div class="saved-item-price">$<%= service.price.toLocaleString() %></div>
+                    </div>
+                    <div class="saved-item-info">
+                      <h3 class="saved-item-title"><%= service.title %></h3>
+                      <div class="saved-item-meta">
+                        <div><i class="fas fa-user"></i> <%= service.provider %></div>
+                        <div><i class="fas fa-star"></i> <%= service.rating %> (<%= service.reviewCount %>)</div>
+                      </div>
+                      <div class="saved-item-actions">
+                        <a href="/services/<%= service.id %>" class="btn btn-primary btn-sm">View Details</a>
+                        <button class="btn btn-outline-danger btn-sm remove-saved" data-id="<%= service.id %>" data-type="service">
+                          <i class="fas fa-heart-broken"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-state-icon">
+                  <i class="fas fa-tools"></i>
+                </div>
+                <h3>No Saved Services</h3>
+                <p>You haven't saved any services yet. Browse services and click the heart icon to save them for later.</p>
+                <div class="empty-state-actions">
+                  <a href="/services" class="btn btn-primary">Browse Services</a>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a href="/" class="footer-logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+          <p>The professional platform for motorcycle enthusiasts to buy, sell, and service bikes.</p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/bikes">Motorcycles</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/sell">Sell</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3 class="footer-title">Categories</h3>
+          <ul>
+            <li><a href="/bikes?category=Sport">Sport</a></li>
+            <li><a href="/bikes?category=Cruiser">Cruiser</a></li>
+            <li><a href="/bikes?category=Touring">Touring</a></li>
+            <li><a href="/bikes?category=Off-road">Off-road</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h3 class="footer-title">Contact Us</h3>
+          <ul>
+            <li>
+              <i class="fas fa-map-marker-alt"></i>
+              <span>123 Bike Street, City, Country</span>
+            </li>
+            <li>
+              <i class="fas fa-phone-alt"></i>
+              <span>+1 (555) 123-4567</span>
+            </li>
+            <li>
+              <i class="fas fa-envelope"></i>
+              <span>info@bikersportal.com</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 BikersPortal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Alert Container -->
+  <div id="alert-container" class="alert-container"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Tab functionality
+      const tabs = document.querySelectorAll('.saved-tab');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Remove active class from all tabs
+          tabs.forEach(t => t.classList.remove('active'));
+          
+          // Add active class to clicked tab
+          tab.classList.add('active');
+          
+          // Hide all tab contents
+          tabContents.forEach(content => {
+            content.classList.remove('active');
+          });
+          
+          // Show the corresponding tab content
+          const tabType = tab.getAttribute('data-tab');
+          document.getElementById(`tab-${tabType}`).classList.add('active');
+          
+          // If tab is "all", show all items
+          if (tabType === 'all') {
+            document.querySelectorAll('.saved-item').forEach(item => {
+              item.style.display = 'block';
+            });
+          } else {
+            // Show only items of the selected type
+            document.querySelectorAll('.saved-item').forEach(item => {
+              if (item.getAttribute('data-type') === tabType) {
+                item.style.display = 'block';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+          }
+        });
+      });
+      
+      // Remove saved item functionality
+      const removeSavedBtns = document.querySelectorAll('.remove-saved');
+      
+      if (removeSavedBtns.length > 0) {
+        removeSavedBtns.forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const itemId = btn.getAttribute('data-id');
+            const itemType = btn.getAttribute('data-type');
+            
+            if (confirm('Are you sure you want to remove this item from your saved items?')) {
+              try {
+                const response = await fetch(`/api/${itemType}s/${itemId}/favorite`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                  // Remove the item from the UI
+                  const savedItem = btn.closest('.saved-item');
+                  savedItem.remove();
+                  
+                  // Show success message
+                  showAlert('success', 'Item removed from your saved items');
+                  
+                  // Check if there are any items left in this tab
+                  const currentTab = document.querySelector('.saved-tab.active').getAttribute('data-tab');
+                  const tabContent = document.getElementById(`tab-${currentTab}`);
+                  
+                  if (tabContent.querySelectorAll('.saved-item').length === 0) {
+                    // Show empty state
+                    let emptyStateHTML = `
+                      <div class="empty-state">
+                        <div class="empty-state-icon">
+                          <i class="${currentTab === 'bikes' ? 'fas fa-motorcycle' : currentTab === 'services' ? 'fas fa-tools' : 'far fa-heart'}"></i>
+                        </div>
+                        <h3>No Saved ${currentTab === 'bikes' ? 'Motorcycles' : currentTab === 'services' ? 'Services' : 'Items'}</h3>
+                        <p>You haven't saved any ${currentTab === 'bikes' ? 'motorcycles' : currentTab === 'services' ? 'services' : 'items'} yet. Browse ${currentTab === 'bikes' ? 'motorcycles' : currentTab === 'services' ? 'services' : 'motorcycles and services'} and click the heart icon to save them for later.</p>
+                        <div class="empty-state-actions">
+                          <a href="/${currentTab === 'services' ? 'services' : 'bikes'}" class="btn btn-primary">Browse ${currentTab === 'services' ? 'Services' : 'Motorcycles'}</a>
+                          ${currentTab === 'all' ? '<a href="/services" class="btn btn-outline">Browse Services</a>' : ''}
+                        </div>
+                      </div>
+                    `;
+                    
+                    tabContent.innerHTML = emptyStateHTML;
+                  }
+                } else {
+                  showAlert('error', data.error || 'Failed to remove item from saved items');
+                }
+              } catch (error) {
+                console.error('Remove saved item error:', error);
+                showAlert('error', 'An error occurred. Please try again.');
+              }
+            }
+          });
+        });
+      }
+      
+      // Alert function
+      function showAlert(type, message) {
+        const alertContainer = document.getElementById('alert-container');
+        
+        if (alertContainer) {
+          // Create alert element
+          const alertElement = document.createElement('div');
+          alertElement.className = `alert alert-${type}`;
+          alertElement.innerHTML = `
+            <div class="alert-content">
+              <i class="alert-icon fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+              <span class="alert-message">${message}</span>
+            </div>
+            <button class="alert-close">
+              <i class="fas fa-times"></i>
+            </button>
+          `;
+          
+          // Add alert to container
+          alertContainer.appendChild(alertElement);
+          
+          // Add click event to close button
+          const closeButton = alertElement.querySelector('.alert-close');
+          if (closeButton) {
+            closeButton.addEventListener('click', () => {
+              alertContainer.removeChild(alertElement);
+            });
+          }
+          
+          // Auto-remove after 5 seconds
+          setTimeout(() => {
+            if (alertContainer.contains(alertElement)) {
+              alertContainer.removeChild(alertElement);
+            }
+          }, 5000);
+        }
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head.html') %>
+  <link rel="stylesheet" href="/css/services.css">
+  <title><%= title || service.title %> | Bikers Portal</title>
+</head>
+<body>
+  <!-- Navbar -->
+  <%- include('partials/navbar.html') %>
+  
+  <main class="service-detail">
+    <div class="service-main">
+      <div class="service-gallery">
+        <div class="service-gallery-main">
+          <img id="main-image" src="<%= service.images && service.images.length > 0 ? service.images[0] : '/images/placeholder.jpg' %>" alt="<%= service.title %>">
+        </div>
+        <div class="service-gallery-thumbs">
+          <% if (service.images && service.images.length > 0) { %>
+            <% service.images.forEach((image, index) => { %>
+              <div class="gallery-thumb <%= index === 0 ? 'active' : '' %>" data-src="<%= image %>">
+                <img src="<%= image %>" alt="<%= service.title %> - thumbnail <%= index + 1 %>">
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="gallery-thumb active" data-src="/images/placeholder.jpg">
+              <img src="/images/placeholder.jpg" alt="Placeholder Image">
+            </div>
+          <% } %>
+        </div>
+      </div>
+      
+      <div class="service-info">
+        <div class="service-info-header">
+          <h1><%= service.title %></h1>
+          <div class="service-meta">
+            <div class="service-meta-item">
+              <i class="fas fa-tag"></i>
+              <span><%= service.serviceType.charAt(0).toUpperCase() + service.serviceType.slice(1) %></span>
+            </div>
+            <div class="service-meta-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span><%= service.location.city %>, <%= service.location.state %></span>
+            </div>
+            <div class="service-meta-item">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Posted <%= new Date(service.createdAt).toLocaleDateString() %></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="service-description-full">
+          <h3>Description</h3>
+          <p><%= service.description %></p>
+        </div>
+        
+        <% if (service.specializations && service.specializations.length > 0) { %>
+        <div class="service-features">
+          <h3>Specializations</h3>
+          <div class="features-list">
+            <% service.specializations.forEach(spec => { %>
+              <div class="feature-item">
+                <i class="fas fa-check-circle"></i>
+                <span><%= spec %></span>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        <% } %>
+        
+        <% if (service.bikeTypes && service.bikeTypes.length > 0) { %>
+        <div class="service-features">
+          <h3>Bike Types Served</h3>
+          <div class="features-list">
+            <% service.bikeTypes.forEach(type => { %>
+              <div class="feature-item">
+                <i class="fas fa-motorcycle"></i>
+                <span><%= type %></span>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+    
+    <div class="service-sidebar">
+      <div class="sidebar-card provider-info">
+        <div class="provider-avatar">
+          <img src="<%= provider.avatar || '/images/default-profile.jpg' %>" alt="<%= provider.username %>">
+        </div>
+        <h3 class="provider-name"><%= provider.username %></h3>
+        <% if (provider.company) { %>
+          <p class="provider-company"><%= provider.company %></p>
+        <% } %>
+        
+        <div class="provider-stats">
+          <div class="provider-stat">
+            <div class="provider-stat-value"><%= providerStats.totalServices %></div>
+            <div class="provider-stat-label">Services</div>
+          </div>
+          <div class="provider-stat">
+            <div class="provider-stat-value"><%= providerStats.reviewCount %></div>
+            <div class="provider-stat-label">Reviews</div>
+          </div>
+          <div class="provider-stat">
+            <div class="provider-stat-value"><%= providerStats.avgRating.toFixed(1) %></div>
+            <div class="provider-stat-label">Rating</div>
+          </div>
+        </div>
+        
+        <div class="provider-actions">
+          <a href="#" class="btn btn-contact" id="contact-provider">Contact</a>
+          <a href="/profile/<%= provider.username %>" class="btn btn-profile">Profile</a>
+        </div>
+      </div>
+      
+      <div class="sidebar-card booking-card">
+        <h3>Book This Service</h3>
+        <div class="price-box">
+          <span class="price-value">$<%= service.price.toFixed(2) %></span>
+          <span class="price-period"><%= service.pricePer || 'per service' %></span>
+        </div>
+        
+        <form id="booking-form" class="booking-form">
+          <input type="hidden" name="serviceId" value="<%= service._id %>">
+          
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" required min="<%= new Date().toISOString().split('T')[0] %>">
+          </div>
+          
+          <div class="form-group">
+            <label for="time">Time</label>
+            <select id="time" name="time" required disabled>
+              <option value="">Select a date first</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="notes">Notes (optional)</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Any special requirements or details..."></textarea>
+          </div>
+          
+          <button type="submit" class="btn-book">Book Now</button>
+        </form>
+        
+        <button id="save-service" class="btn-save <%= isSaved ? 'saved' : '' %>">
+          <i class="<%= isSaved ? 'fas' : 'far' %> fa-heart"></i>
+          <span><%= isSaved ? 'Saved' : 'Save Service' %></span>
+        </button>
+      </div>
+      
+      <div class="sidebar-card map-section">
+        <div id="map" class="map-container"></div>
+        <div class="location-info">
+          <p><i class="fas fa-map-marker-alt"></i> <%= service.location.address %></p>
+          <p><i class="fas fa-city"></i> <%= service.location.city %>, <%= service.location.state %> <%= service.location.zipCode %></p>
+          <% if (service.location.directions) { %>
+            <p><i class="fas fa-directions"></i> <%= service.location.directions %></p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="reviews-section">
+      <div class="reviews-header">
+        <h2>Customer Reviews</h2>
+        <div class="overall-rating">
+          <div class="rating-value"><%= service.avgRating ? service.avgRating.toFixed(1) : '0.0' %></div>
+          <div class="rating-stars">
+            <% for(let i = 1; i <= 5; i++) { %>
+              <i class="<%= i <= Math.round(service.avgRating || 0) ? 'fas' : 'far' %> fa-star"></i>
+            <% } %>
+          </div>
+          <div class="rating-count">(<%= service.reviewCount || 0 %> reviews)</div>
+        </div>
+      </div>
+      
+      <div id="review-list" class="review-list">
+        <!-- Reviews will be loaded via JavaScript -->
+        <div class="loading-indicator">
+          <div class="spinner"></div>
+          <p>Loading reviews...</p>
+        </div>
+      </div>
+      
+      <div class="load-more" id="load-more-reviews">
+        <button class="btn-load-more">Load More Reviews</button>
+      </div>
+      
+      <% if (currentUser) { %>
+      <div class="review-form-container">
+        <h3>Write a Review</h3>
+        <form id="review-form" class="review-form">
+          <input type="hidden" name="serviceId" value="<%= service._id %>">
+          
+          <div class="rating-select">
+            <div class="star-rating">
+              <input type="radio" id="star5" name="rating" value="5" required>
+              <label for="star5"><i class="fas fa-star"></i></label>
+              
+              <input type="radio" id="star4" name="rating" value="4">
+              <label for="star4"><i class="fas fa-star"></i></label>
+              
+              <input type="radio" id="star3" name="rating" value="3">
+              <label for="star3"><i class="fas fa-star"></i></label>
+              
+              <input type="radio" id="star2" name="rating" value="2">
+              <label for="star2"><i class="fas fa-star"></i></label>
+              
+              <input type="radio" id="star1" name="rating" value="1">
+              <label for="star1"><i class="fas fa-star"></i></label>
+            </div>
+          </div>
+          
+          <textarea id="comment" name="comment" class="review-textarea" placeholder="Share your experience with this service..." required></textarea>
+          
+          <button type="submit" class="btn-submit-review">Submit Review</button>
+        </form>
+      </div>
+      <% } else { %>
+      <div class="review-form-container">
+        <p>Please <a href="/login.html">log in</a> to leave a review.</p>
+      </div>
+      <% } %>
+    </div>
+    
+    <% if (similarServices && similarServices.length > 0) { %>
+    <div class="similar-services">
+      <h2>Similar Services</h2>
+      <div class="services-grid">
+        <% similarServices.forEach(similar => { %>
+          <div class="service-card">
+            <div class="service-img-container">
+              <img class="service-img" src="<%= similar.images && similar.images.length > 0 ? similar.images[0] : '/images/placeholder.jpg' %>" alt="<%= similar.title %>">
+              <div class="service-type"><%= similar.serviceType.charAt(0).toUpperCase() + similar.serviceType.slice(1) %></div>
+            </div>
+            <div class="service-content">
+              <h3 class="service-title"><%= similar.title %></h3>
+              <div class="service-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <span><%= similar.location.city %>, <%= similar.location.state %></span>
+              </div>
+              <div class="service-description"><%= similar.description.substring(0, 100) %>...</div>
+              <div class="service-footer">
+                <div class="service-price">$<%= similar.price.toFixed(2) %></div>
+                <div class="service-rating">
+                  <div class="stars">
+                    <% for(let i = 1; i <= 5; i++) { %>
+                      <i class="<%= i <= Math.round(similar.avgRating || 0) ? 'fas' : 'far' %> fa-star"></i>
+                    <% } %>
+                  </div>
+                  <div class="count">(<%= similar.reviewCount || 0 %>)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+  </main>
+  
+  <!-- Contact Provider Modal -->
+  <div id="contact-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h3>Contact Service Provider</h3>
+      <form id="contact-form">
+        <input type="hidden" name="providerId" value="<%= provider._id %>">
+        <input type="hidden" name="serviceId" value="<%= service._id %>">
+        
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" required value="Inquiry about: <%= service.title %>">
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required placeholder="Your message to the service provider..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Contact Information</label>
+          <% if (provider.phone) { %>
+            <p><i class="fas fa-phone"></i> <%= provider.phone %></p>
+          <% } %>
+          <% if (provider.email) { %>
+            <p><i class="fas fa-envelope"></i> <%= provider.email %></p>
+          <% } %>
+          <% if (provider.website) { %>
+            <p><i class="fas fa-globe"></i> <a href="<%= provider.website %>" target="_blank"><%= provider.website %></a></p>
+          <% } %>
+        </div>
+        
+        <button type="submit" class="btn-book">Send Message</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <%- include('partials/footer.html') %>
+  
+  <!-- Scripts -->
+  <script src="/js/utils.js"></script>
+  <script src="/js/service-detail.js"></script>
+</body>
+</html> 

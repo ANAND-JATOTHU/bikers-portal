@@ -1,0 +1,41 @@
+
+{
+  "name": "bikers-portal",
+  "version": "1.0.0",
+  "description": "A professional motorcycle platform for buying, selling, and servicing bikes",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "motorcycle",
+    "bikes",
+    "marketplace",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^5.0.0",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.2.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^7.0.3",
+    "multer": "^1.4.5-lts.1",
+    "validator": "^13.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

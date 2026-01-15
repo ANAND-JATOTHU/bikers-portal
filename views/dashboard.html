@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Bikers Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .dashboard-welcome {
+      background-color: #f8f9fa;
+      padding: 60px 0;
+    }
+    
+    .dashboard-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .dashboard-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    .dashboard-header p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+    
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .action-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: #333;
+    }
+    
+    .action-button:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-icon {
+      background-color: #f8f9fa;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .action-icon i {
+      font-size: 2.5rem;
+    }
+    
+    .buy-button .action-icon {
+      background-color: #e6f7ff;
+    }
+    
+    .buy-button .action-icon i {
+      color: #0084ff;
+    }
+    
+    .sell-button .action-icon {
+      background-color: #fff2e6;
+    }
+    
+    .sell-button .action-icon i {
+      color: #ff6b35;
+    }
+    
+    .action-content {
+      text-align: center;
+    }
+    
+    .action-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .action-content p {
+      color: #666;
+      margin-bottom: 0;
+    }
+    
+    .recent-activity {
+      padding: 60px 0;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #333;
+    }
+    
+    @media (max-width: 992px) {
+      .action-buttons {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="/dashboard" class="logo"><i class="fas fa-motorcycle"></i> BikersPortal</a>
+        
+        <button class="mobile-menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <ul class="menu">
+          <li class="menu-item"><a href="/bikes" class="menu-link">Motorcycles</a></li>
+          <li class="menu-item"><a href="/sell" class="menu-link">Sell</a></li>
+          <li class="menu-item dropdown">
+            <a href="#" class="menu-link dropdown-toggle">
+              <i class="fas fa-user-circle"></i> <%= currentUser ? currentUser.firstName : 'User' %>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+              <li><a href="/profile"><i class="fas fa-user"></i> My Profile</a></li>
+              <li><a href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Dashboard Welcome Section -->
+  <section class="dashboard-welcome section">
+    <div class="container">
+      <div class="dashboard-header">
+        <h1>Welcome, <%= currentUser ? currentUser.firstName : 'User' %>!</h1>
+        <p>What would you like to do today?</p>
+      </div>
+      
+      <!-- Main Action Buttons -->
+      <div class="action-buttons">
+        <a href="/bikes" class="action-button buy-button">
+          <div class="action-icon">
+            <i class="fas fa-shopping-cart"></i>
+        </div>
+          <div class="action-content">
+            <h3>Buy Motorcycles</h3>
+            <p>Browse through our collection of motorcycles available for purchase</p>
+        </div>
+        </a>
+        
+        <a href="/sell" class="action-button sell-button">
+          <div class="action-icon">
+            <i class="fas fa-tags"></i>
+            </div>
+          <div class="action-content">
+            <h3>Sell Your Bike</h3>
+            <p>List your motorcycle for sale and reach potential buyers</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Activity Section -->
+  <section class="recent-activity section">
+    <div class="container">
+      <h2 class="section-title">Recent Activity</h2>
+      
+      <div class="dashboard-cards">
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3><i class="fas fa-motorcycle"></i> My Listed Bikes</h3>
+            <a href="/dashboard/bikes" class="btn btn-outline-sm">View All</a>
+                </div>
+          <div class="card-body">
+            <div id="user-bikes-list">
+              <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading your listings...
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h3><i class="fas fa-heart"></i> Saved Items</h3>
+            <a href="/dashboard/saved" class="btn btn-outline-sm">View All</a>
+          </div>
+          <div class="card-body">
+            <div id="user-saved-list">
+              <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading saved items...
+          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2023 BikersPortal. All rights reserved.</p>
+    </div>
+  </div>
+  </footer>
+
+  <!-- Alert Container -->
+  <div id="alert-container" class="alert-container"></div>
+
+  <script src="/js/main.js"></script>
+  <script>
+    // Load user's bikes listings
+    async function loadUserBikes() {
+      const bikesContainer = document.getElementById('user-bikes-list');
+      
+      try {
+        const response = await fetch('/dashboard/api/bikes');
+        const data = await response.json();
+        
+        if (data.success) {
+          if (data.bikes && data.bikes.length > 0) {
+            bikesContainer.innerHTML = '';
+            
+            data.bikes.slice(0, 3).forEach(bike => {
+              // Determine the image source with proper fallbacks
+              const imageSource = bike.thumbnailImage || 
+                                 (bike.images && bike.images.length > 0 ? bike.images[0] : '/images/default-bike.jpg');
+              
+              bikesContainer.innerHTML += `
+                <div class="dashboard-list-item">
+                  <div class="list-item-image">
+                    <img src="${imageSource}" alt="${bike.title}" 
+                         onerror="this.onerror=null; this.src='/images/default-bike.jpg';">
+                  </div>
+                  <div class="list-item-content">
+                    <h4>${bike.title}</h4>
+                    <div class="user-bike-info">
+                      <p>${bike.year} · ${bike.mileage} km · ₹${bike.price}</p>
+                    </div>
+                  </div>
+                  <div class="list-item-actions">
+                    <a href="/bikes/${bike._id}" class="btn btn-outline-sm">View</a>
+                  </div>
+                </div>
+              `;
+            });
+          } else {
+            bikesContainer.innerHTML = `
+              <div class="empty-list">
+                <p>You haven't listed any bikes for sale yet.</p>
+                <a href="/sell" class="btn btn-primary">List a Bike</a>
+              </div>
+            `;
+          }
+        } else {
+          throw new Error(data.error || 'Error loading bikes');
+        }
+      } catch (error) {
+        console.error('Error loading user bikes:', error);
+        bikesContainer.innerHTML = `
+          <div class="empty-list">
+            <p>You haven't listed any bikes for sale yet.</p>
+            <a href="/sell" class="btn btn-primary">List a Bike</a>
+          </div>
+        `;
+      }
+    }
+
+    // Load user's saved items
+    async function loadSavedItems() {
+      const savedContainer = document.getElementById('user-saved-list');
+      
+      try {
+        const response = await fetch('/dashboard/api/saved');
+        const data = await response.json();
+        
+        if (data.success) {
+          if (data.items && data.items.length > 0) {
+            savedContainer.innerHTML = '';
+            
+            data.items.slice(0, 3).forEach(item => {
+              savedContainer.innerHTML += `
+                <div class="dashboard-list-item">
+                  <div class="list-item-image">
+                    <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.title}">
+                  </div>
+                  <div class="list-item-content">
+                    <h4>${item.title}</h4>
+                    <p>Motorcycle</p>
+                  </div>
+                  <div class="list-item-actions">
+                    <a href="/bikes/${item.itemId}" class="btn btn-outline-sm">View</a>
+                  </div>
+                </div>
+              `;
+            });
+          } else {
+            savedContainer.innerHTML = `
+              <div class="empty-list">
+                <p>You don't have any saved items yet.</p>
+                <a href="/bikes" class="btn btn-primary">Browse Bikes</a>
+              </div>
+            `;
+          }
+        } else {
+          throw new Error(data.error || 'Error loading saved items');
+        }
+      } catch (error) {
+        console.error('Error loading saved items:', error);
+        savedContainer.innerHTML = `
+          <div class="empty-list">
+            <p>You don't have any saved items yet.</p>
+            <a href="/bikes" class="btn btn-primary">Browse Bikes</a>
+          </div>
+        `;
+      }
+    }
+
+    // Load user data when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserBikes();
+      loadSavedItems();
+    });
+  </script>
+</body>
+</html> 

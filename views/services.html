@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || 'Motorcycle Services' %> | Bikers Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/utils.css">
+  <link rel="stylesheet" href="/css/services.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <%- include('partials/navbar.html') %>
+  
+  <main class="services-container">
+    <div class="services-header">
+      <h1>Find Motorcycle Services</h1>
+      <p>Discover professional motorcycle services including repairs, maintenance, customization, and more from trusted providers in your area.</p>
+    </div>
+    
+    <div class="services-filters">
+      <form id="filter-form">
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="search">Search</label>
+            <input type="text" id="search" name="search" placeholder="Keywords or service name...">
+          </div>
+          <div class="filter-group">
+            <label for="type">Service Type</label>
+            <select id="type" name="type">
+              <option value="">All Types</option>
+              <option value="repair">Repair & Maintenance</option>
+              <option value="customization">Customization</option>
+              <option value="detailing">Detailing & Cleaning</option>
+              <option value="inspection">Inspection & Diagnostics</option>
+              <option value="towing">Towing & Recovery</option>
+              <option value="transport">Transportation</option>
+              <option value="storage">Storage</option>
+              <option value="other">Other Services</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" placeholder="City or Area...">
+          </div>
+        </div>
+        
+        <div class="filter-row">
+          <div class="filter-group">
+            <label for="price-range">Price Range</label>
+            <div class="price-range">
+              <input type="number" id="min-price" name="minPrice" placeholder="Min Price" min="0">
+              <input type="number" id="max-price" name="maxPrice" placeholder="Max Price" min="0">
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="rating">Minimum Rating</label>
+            <select id="rating" name="rating">
+              <option value="">Any Rating</option>
+              <option value="4">4+ Stars</option>
+              <option value="3">3+ Stars</option>
+              <option value="2">2+ Stars</option>
+              <option value="1">1+ Stars</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="sort">Sort By</label>
+            <select id="sort" name="sort">
+              <option value="newest">Newest First</option>
+              <option value="rating">Highest Rated</option>
+              <option value="priceAsc">Price: Low to High</option>
+              <option value="priceDesc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="filter-actions">
+          <button type="submit" class="filter-btn">Apply Filters</button>
+          <button type="reset" class="filter-btn filter-reset">Reset</button>
+        </div>
+      </form>
+    </div>
+    
+    <div id="services-grid" class="services-grid">
+      <!-- Services will be loaded dynamically via JavaScript -->
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Loading services...</p>
+      </div>
+    </div>
+    
+    <div id="pagination" class="pagination">
+      <!-- Pagination will be generated via JavaScript -->
+    </div>
+    
+    <div id="no-results" class="no-results" style="display:none; text-align:center; padding:50px 0;">
+      <h3>No services found</h3>
+      <p>Try adjusting your filters or search terms to find services.</p>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <%- include('partials/footer.html') %>
+  
+  <!-- Scripts -->
+  <script src="/js/utils.js"></script>
+  <script src="/js/services.js"></script>
+</body>
+</html> 

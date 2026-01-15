@@ -1,0 +1,375 @@
+<%- include('partials/header') %>
+
+<link rel="stylesheet" href="/css/seller-profile.css">
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-4">
+            <!-- Profile Card -->
+            <div class="profile-card">
+                <div class="profile-header" style="background-image: url('/img/profile-bg.jpg')">
+                    <div class="profile-header-overlay">
+                        <h4 class="mb-0"><%= seller.username %></h4>
+                        <p class="mb-0"><i class="fas fa-map-marker-alt me-1"></i><%= seller.location || 'Location not specified' %></p>
+                    </div>
+                </div>
+                <div class="profile-image-container">
+                    <img src="<%= seller.profileImage || '/img/default-profile.jpg' %>" alt="<%= seller.username %>" class="profile-image">
+                </div>
+                <div class="profile-body">
+                    <div class="profile-actions">
+                        <button id="followButton" class="btn btn-sm <%= isFollowing ? 'btn-secondary' : 'btn-outline-primary' %>" data-seller-id="<%= seller._id %>">
+                            <i class="<%= isFollowing ? 'fas' : 'far' %> fa-heart me-1"></i>
+                            <span id="followText"><%= isFollowing ? 'Following' : 'Follow' %></span>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#messageModal">
+                            <i class="far fa-envelope me-1"></i> Message
+                        </button>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-value"><%= bikes.length %></span>
+                            <span class="stat-label">Bikes</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value"><%= seller.followers ? seller.followers.length : 0 %></span>
+                            <span class="stat-label">Followers</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value"><%= totalSold || 0 %></span>
+                            <span class="stat-label">Sold</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bio-section">
+                        <h5>About</h5>
+                        <p><%= seller.bio || 'No bio information provided.' %></p>
+                    </div>
+                    
+                    <% if (seller.email || seller.phone) { %>
+                    <div class="contact-info">
+                        <% if (seller.email) { %>
+                        <div class="contact-item">
+                            <i class="far fa-envelope"></i>
+                            <%= seller.email %>
+                        </div>
+                        <% } %>
+                        
+                        <% if (seller.phone) { %>
+                        <div class="contact-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <%= seller.phone %>
+                        </div>
+                        <% } %>
+                    </div>
+                    <% } %>
+                    
+                    <% if (seller.socialLinks && (seller.socialLinks.facebook || seller.socialLinks.instagram || seller.socialLinks.twitter)) { %>
+                    <div class="social-links">
+                        <% if (seller.socialLinks.facebook) { %>
+                        <a href="<%= seller.socialLinks.facebook %>" class="social-link" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <% } %>
+                        
+                        <% if (seller.socialLinks.instagram) { %>
+                        <a href="<%= seller.socialLinks.instagram %>" class="social-link" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <% } %>
+                        
+                        <% if (seller.socialLinks.twitter) { %>
+                        <a href="<%= seller.socialLinks.twitter %>" class="social-link" target="_blank">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <% } %>
+                    </div>
+                    <% } %>
+                    
+                    <div class="rating-display mt-3">
+                        <div class="stars">
+                            <% for(let i = 1; i <= 5; i++) { %>
+                                <% if (i <= Math.floor(averageRating)) { %>
+                                    <i class="fas fa-star"></i>
+                                <% } else if (i === Math.ceil(averageRating) && !Number.isInteger(averageRating)) { %>
+                                    <i class="fas fa-star-half-alt"></i>
+                                <% } else { %>
+                                    <i class="far fa-star text-muted"></i>
+                                <% } %>
+                            <% } %>
+                        </div>
+                        <span class="rating-value"><%= averageRating.toFixed(1) %></span>
+                        <span class="rating-count">(<%= reviews.length %> reviews)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <!-- Tabs -->
+            <div class="seller-tabs">
+                <ul class="nav nav-tabs" id="sellerTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="bikes-tab" data-bs-toggle="tab" data-bs-target="#bikes" type="button" role="tab" aria-controls="bikes" aria-selected="true">
+                            <i class="fas fa-motorcycle me-2"></i>Bikes
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">
+                            <i class="fas fa-star me-2"></i>Reviews
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab" aria-controls="about" aria-selected="false">
+                            <i class="fas fa-info-circle me-2"></i>About
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="sellerTabsContent">
+                    <!-- Bikes Tab -->
+                    <div class="tab-pane fade show active" id="bikes" role="tabpanel" aria-labelledby="bikes-tab">
+                        <div class="bikes-grid" id="bikesContainer">
+                            <% if (bikes && bikes.length > 0) { %>
+                                <% bikes.forEach(bike => { %>
+                                    <div class="bike-card">
+                                        <div class="bike-image">
+                                            <img src="<%= bike.images && bike.images.length > 0 ? bike.images[0] : '/img/default-bike.jpg' %>" alt="<%= bike.title %>">
+                                            <div class="bike-badge <%= bike.availability === 'available' ? 'available' : 'sold' %>">
+                                                <%= bike.availability === 'available' ? 'Available' : 'Sold' %>
+                                            </div>
+                                        </div>
+                                        <div class="bike-content">
+                                            <h5 class="bike-title"><%= bike.title %></h5>
+                                            <p class="bike-subtitle"><%= bike.brand %> <%= bike.model %> <%= bike.year %></p>
+                                            <p class="bike-price">₹<%= bike.price.toLocaleString() %></p>
+                                            <div class="bike-meta">
+                                                <span class="bike-meta-item"><i class="fas fa-tachometer-alt me-1"></i><%= bike.mileage %> km</span>
+                                                <span class="bike-meta-item"><i class="fas fa-cog me-1"></i><%= bike.engineCapacity %> cc</span>
+                                                <span class="bike-meta-item"><i class="fas fa-gas-pump me-1"></i><%= bike.fuelType %></span>
+                                            </div>
+                                            <a href="/bikes/<%= bike._id %>" class="btn btn-sm btn-primary w-100">View Details</a>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="alert alert-info w-100">This seller hasn't listed any bikes yet.</div>
+                            <% } %>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <% if (totalBikePages > 1) { %>
+                        <div class="pagination-container">
+                            <nav aria-label="Bikes pagination">
+                                <ul class="pagination" id="bikesPagination">
+                                    <li class="page-item <%= currentBikePage === 1 ? 'disabled' : '' %>">
+                                        <a class="page-link" href="javascript:void(0)" data-page="<%= currentBikePage - 1 %>" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    
+                                    <% for(let i = 1; i <= totalBikePages; i++) { %>
+                                        <li class="page-item <%= i === currentBikePage ? 'active' : '' %>">
+                                            <a class="page-link" href="javascript:void(0)" data-page="<%= i %>"><%= i %></a>
+                                        </li>
+                                    <% } %>
+                                    
+                                    <li class="page-item <%= currentBikePage === totalBikePages ? 'disabled' : '' %>">
+                                        <a class="page-link" href="javascript:void(0)" data-page="<%= currentBikePage + 1 %>" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Reviews Tab -->
+                    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                        <% if (user && user._id.toString() !== seller._id.toString() && !hasReviewed) { %>
+                        <div class="review-form-card mb-4">
+                            <h5 class="mb-3">Write a Review</h5>
+                            <form id="reviewForm" data-seller-id="<%= seller._id %>">
+                                <div class="mb-3">
+                                    <label class="form-label">Rating</label>
+                                    <div class="rating-input">
+                                        <input type="radio" id="star5" name="rating" value="5" required>
+                                        <label for="star5" title="5 stars"><i class="far fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star4" name="rating" value="4">
+                                        <label for="star4" title="4 stars"><i class="far fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star3" name="rating" value="3">
+                                        <label for="star3" title="3 stars"><i class="far fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star2" name="rating" value="2">
+                                        <label for="star2" title="2 stars"><i class="far fa-star"></i></label>
+                                        
+                                        <input type="radio" id="star1" name="rating" value="1">
+                                        <label for="star1" title="1 star"><i class="far fa-star"></i></label>
+                                    </div>
+                                    <div id="ratingError" class="invalid-feedback"></div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="reviewText" class="form-label">Your Review</label>
+                                    <textarea class="form-control review-textarea" id="reviewText" name="text" rows="4" placeholder="Share your experience with this seller..." required></textarea>
+                                    <div id="textError" class="invalid-feedback"></div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                                <div id="reviewSubmitError" class="text-danger mt-2 d-none"></div>
+                                <div id="reviewSubmitSuccess" class="text-success mt-2 d-none">Your review has been submitted successfully!</div>
+                            </form>
+                        </div>
+                        <% } %>
+                        
+                        <div id="reviewsContainer">
+                            <% if (reviews && reviews.length > 0) { %>
+                                <% reviews.forEach(review => { %>
+                                    <div class="review-card p-3">
+                                        <div class="review-header">
+                                            <div class="reviewer">
+                                                <img src="<%= review.reviewer.profileImage || '/img/default-profile.jpg' %>" alt="<%= review.reviewer.username %>" class="reviewer-image">
+                                                <div>
+                                                    <h6 class="reviewer-name"><%= review.reviewer.username %></h6>
+                                                    <div class="stars mb-1">
+                                                        <% for(let i = 1; i <= 5; i++) { %>
+                                                            <i class="<%= i <= review.rating ? 'fas' : 'far' %> fa-star <%= i <= review.rating ? '' : 'text-muted' %>"></i>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="review-date"><%= new Date(review.createdAt).toLocaleDateString() %></span>
+                                        </div>
+                                        <p class="review-content"><%= review.text %></p>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="alert alert-info">No reviews yet. Be the first to leave a review!</div>
+                            <% } %>
+                        </div>
+                        
+                        <!-- Review Pagination -->
+                        <% if (totalReviewPages > 1) { %>
+                        <div class="pagination-container">
+                            <nav aria-label="Reviews pagination">
+                                <ul class="pagination" id="reviewsPagination">
+                                    <li class="page-item <%= currentReviewPage === 1 ? 'disabled' : '' %>">
+                                        <a class="page-link" href="javascript:void(0)" data-page="<%= currentReviewPage - 1 %>" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    
+                                    <% for(let i = 1; i <= totalReviewPages; i++) { %>
+                                        <li class="page-item <%= i === currentReviewPage ? 'active' : '' %>">
+                                            <a class="page-link" href="javascript:void(0)" data-page="<%= i %>"><%= i %></a>
+                                        </li>
+                                    <% } %>
+                                    
+                                    <li class="page-item <%= currentReviewPage === totalReviewPages ? 'disabled' : '' %>">
+                                        <a class="page-link" href="javascript:void(0)" data-page="<%= currentReviewPage + 1 %>" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <% } %>
+                    </div>
+                    
+                    <!-- About Tab -->
+                    <div class="tab-pane fade" id="about" role="tabpanel" aria-labelledby="about-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">About <%= seller.username %></h5>
+                                <p><strong>Member Since:</strong> <%= new Date(seller.createdAt).toLocaleDateString() %></p>
+                                
+                                <% if (seller.bio) { %>
+                                <div class="mb-4">
+                                    <h6>Bio</h6>
+                                    <p><%= seller.bio %></p>
+                                </div>
+                                <% } %>
+                                
+                                <% if (seller.location) { %>
+                                <div class="mb-4">
+                                    <h6>Location</h6>
+                                    <p><i class="fas fa-map-marker-alt me-2"></i><%= seller.location %></p>
+                                </div>
+                                <% } %>
+                                
+                                <div class="mb-4">
+                                    <h6>Contact Information</h6>
+                                    <% if (seller.email) { %>
+                                    <p><i class="far fa-envelope me-2"></i><%= seller.email %></p>
+                                    <% } %>
+                                    
+                                    <% if (seller.phone) { %>
+                                    <p><i class="fas fa-phone-alt me-2"></i><%= seller.phone %></p>
+                                    <% } %>
+                                </div>
+                                
+                                <% if (seller.specializations && seller.specializations.length > 0) { %>
+                                <div class="mb-4">
+                                    <h6>Specializations</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <% seller.specializations.forEach(spec => { %>
+                                        <span class="badge bg-primary"><%= spec %></span>
+                                        <% }) %>
+                                    </div>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Message Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Send Message to <%= seller.username %></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <% if (user) { %>
+                <form id="messageForm" class="message-form" data-recipient-id="<%= seller._id %>">
+                    <div class="mb-3">
+                        <label for="messageSubject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="messageSubject" name="subject" required>
+                        <div id="subjectError" class="invalid-feedback"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="messageContent" class="form-label">Message</label>
+                        <textarea class="form-control" id="messageContent" name="content" rows="5" required></textarea>
+                        <div id="contentError" class="invalid-feedback"></div>
+                    </div>
+                    <div id="messageError" class="alert alert-danger d-none"></div>
+                    <div id="messageSuccess" class="alert alert-success d-none"></div>
+                </form>
+                <% } else { %>
+                <div class="alert alert-warning">
+                    You need to <a href="/login?redirect=/sellers/<%= seller._id %>">login</a> to send messages.
+                </div>
+                <% } %>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <% if (user) { %>
+                <button type="button" class="btn btn-primary" id="sendMessageBtn">Send Message</button>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/seller-profile.js"></script>
+<%- include('partials/footer') %> 
