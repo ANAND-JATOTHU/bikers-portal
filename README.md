@@ -28,6 +28,7 @@ Bikers Portal is a full-stack web application that allows users to buy, sell, an
 - Node.js (v14 or higher)
 - MongoDB Atlas account or local MongoDB installation
 - Git
+- GitHub
 
 ## 🚀 Installation & Setup
 
